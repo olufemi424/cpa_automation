@@ -1,0 +1,61 @@
+version: '3'
+
+name: niniwise-cpa-automation-db
+services:
+  postgres:
+    image: postgres:14.2
+    container_name: cpa-automation-postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+      # create database from computed db sql file
+      - ./scripts/db/temp_local_db_scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  pgadmin:
+    container_name: cpa-automation-pgadmin
+    image: dpage/pgadmin4:7.3
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PGADMIN_CONFIG_LOGIN_BANNER: '"CPA Automation App"'
+    volumes:
+      - ./scripts/pgadmin/servers.json:/pgadmin4/servers.json
+      - pgadmin-volume:/data/pgadmin
+    ports:
+      - 8081:80
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: cpa-automation-redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-volume:/data
+
+volumes:
+  postgres-volume:
+  pgadmin-volume:
+  redis-volume:
+
+    # you can pass in container name to environment variables, cool
+
+    # in production, we dont want to use docker compose file, as we will use our
+    # docker file to build an image and deploy the image

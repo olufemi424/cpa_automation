@@ -1,0 +1,22 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "CPA Automation DB (Local)",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "cpa_automation_db",
+      "Username": "boilerplatedb_admin",
+      "Password": "admin_password123",
+      "SSLMode": "prefer",
+      "SSLCert": "<SOTORAGE_DIR>/.postgresql/postgresql.crt",
+      "SSLKey": "<SOTORAGE_DIR>/.postgresql/postgresql.key",
+      "SSLCompression": 0,
+      "FGColor": "#00ff",
+      "Timeout": 0,
+      "UseSSHTunnel": 0,
+      "TunnelPort": 22,
+      "TunnelAuthentication": 0
+    }
+  }
+}
