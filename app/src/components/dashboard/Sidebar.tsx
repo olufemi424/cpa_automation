@@ -82,7 +82,7 @@ export function Sidebar({ userRole }: SidebarProps) {
     },
     {
       name: "Admin",
-      href: "/dashboard/admin/users",
+      href: "/dashboard/admin",
       roles: ["ADMIN"],
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

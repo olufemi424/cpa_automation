@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useUsers, useCreateUser, useUpdateUser, useDeleteUser, type User } from "@/hooks/useUsers";
 import { LoadingSpinner } from "@/components/ui/Loading";
 
@@ -97,6 +98,15 @@ export default function AdminUsersPage() {
   return (
     <div className="p-8">
       <div className="mb-6">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
+        >
+          <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Dashboard
+        </Link>
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
         <p className="text-gray-600 mt-1">Manage system users and their roles</p>
       </div>
