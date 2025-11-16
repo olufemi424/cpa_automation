@@ -1,26 +1,139 @@
 @import "tailwindcss";
 
+/* Style Guide CSS Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds */
+  --background: rgb(255, 255, 255);
+  --background-dark: rgb(245, 245, 245);
+
+  /* Accent Colors */
+  --accent-light: rgba(0, 0, 0, 0.1);
+  --accent-hover: rgba(0, 0, 0, 0.15);
+
+  /* Text Colors */
+  --text-primary: rgba(0, 0, 0, 0.95);
+  --text-secondary: rgba(0, 0, 0, 0.7);
+
+  /* Glass Morphism */
+  --glass-bg: rgba(240, 240, 240, 0.8);
+  --glass-bg-hover: rgba(230, 230, 230, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-border-hover: rgba(0, 0, 0, 0.2);
 }
 
 @theme inline {
+  /* Tailwind v4 theme configuration */
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Glass colors */
+  --color-glass-DEFAULT: rgba(240, 240, 240, 0.8);
+  --color-glass-dark: rgba(0, 0, 0, 0.05);
+  --color-glass-border: rgba(0, 0, 0, 0.1);
+  --color-glass-border-dark: rgba(0, 0, 0, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base font size - 90% as per style guide */
+html {
+  font-size: 90%;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 90%;
   }
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Subtle background overlay effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glass Card Component Styles */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  background: var(--glass-bg);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+  transition: all 300ms ease;
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+  transform: scale(1.01);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--glass-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInFast {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 0.5s ease-out 0.2s both;
+}
+
+.animate-fade-in-fast {
+  animation: fadeInFast 0.3s ease-out;
 }

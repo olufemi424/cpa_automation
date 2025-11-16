@@ -20,21 +20,29 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="dashboard min-h-screen" style={{ background: 'var(--background)' }}>
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
+      <header className="dashboard__header sticky top-0 z-50 border-b" style={{
+        background: 'var(--glass-bg)',
+        borderColor: 'var(--glass-border)',
+        boxShadow: '0 2px 8px 0 rgba(0, 0, 0, 0.08)'
+      }}>
+        <div className="dashboard__header-container px-4 sm:px-6 lg:px-8">
+          <div className="dashboard__header-content flex items-center justify-between h-16">
+            <div className="dashboard__header-left flex items-center">
+              <h1 className="dashboard__title text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 CPA Command Center
               </h1>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
+            <div className="dashboard__header-right flex items-center gap-4">
+              <span className="dashboard__user-name text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {user.name || user.email}
               </span>
-              <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+              <span className="dashboard__user-role inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all duration-300" style={{
+                background: 'rgba(0, 0, 0, 0.05)',
+                color: 'var(--text-primary)',
+                border: '1px solid rgba(0, 0, 0, 0.1)'
+              }}>
                 {user.role}
               </span>
             </div>
@@ -43,9 +51,12 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="dashboard__main flex h-[calc(100vh-4rem)]">
         {/* Client List Panel */}
-        <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
+        <aside className="dashboard__sidebar dashboard__sidebar--clients w-80 border-r overflow-y-auto" style={{
+          background: 'var(--glass-bg)',
+          borderColor: 'var(--glass-border)'
+        }}>
           <ClientList
             selectedClientId={selectedClientId}
             onSelectClient={setSelectedClientId}
@@ -53,8 +64,8 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
         </aside>
 
         {/* Main Workspace */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6">
+        <main className="dashboard__workspace flex-1 overflow-y-auto">
+          <div className="dashboard__workspace-content p-4 sm:p-6">
             <KanbanBoard
               selectedClientId={selectedClientId}
               onSelectClient={setSelectedClientId}
@@ -64,7 +75,10 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
 
         {/* Chat Panel (Collapsible) */}
         {isChatOpen && (
-          <aside className="w-96 bg-white border-l border-gray-200 overflow-y-auto">
+          <aside className="dashboard__sidebar dashboard__sidebar--chat w-96 border-l overflow-y-auto animate-fade-in-fast" style={{
+            background: 'var(--glass-bg)',
+            borderColor: 'var(--glass-border)'
+          }}>
             <ChatPanel
               clientId={selectedClientId}
               onClose={() => setIsChatOpen(false)}
@@ -77,11 +91,16 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
       {!isChatOpen && selectedClientId && (
         <button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+          className="dashboard__chat-button fixed bottom-6 right-6 p-4 rounded-full transition-all duration-300 hover:scale-110"
+          style={{
+            background: 'rgba(0, 0, 0, 0.9)',
+            color: 'white',
+            boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.15)'
+          }}
           aria-label="Open chat"
         >
           <svg
-            className="w-6 h-6"
+            className="dashboard__chat-icon w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

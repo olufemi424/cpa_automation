@@ -8,12 +8,13 @@ interface ChatPanelProps {
 export function ChatPanel({ clientId, onClose }: ChatPanelProps) {
   if (!clientId) {
     return (
-      <div className="flex flex-col h-full">
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">Messages</h3>
+      <div className="chat-panel flex flex-col h-full">
+        <div className="chat-panel__header p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--glass-border)' }}>
+          <h3 className="chat-panel__title font-bold text-base" style={{ color: 'var(--text-primary)' }}>Messages</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="chat-panel__close-button transition-all duration-300 hover:scale-110"
+            style={{ color: 'var(--text-secondary)' }}
             aria-label="Close chat"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,7 +22,7 @@ export function ChatPanel({ clientId, onClose }: ChatPanelProps) {
             </svg>
           </button>
         </div>
-        <div className="flex-1 flex items-center justify-center text-gray-500">
+        <div className="chat-panel__empty flex-1 flex items-center justify-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           Select a client to view messages
         </div>
       </div>
@@ -29,13 +30,14 @@ export function ChatPanel({ clientId, onClose }: ChatPanelProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="chat-panel flex flex-col h-full animate-fade-in">
       {/* Chat Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900">Messages</h3>
+      <div className="chat-panel__header p-4 border-b flex items-center justify-between" style={{ borderColor: 'var(--glass-border)' }}>
+        <h3 className="chat-panel__title font-bold text-base" style={{ color: 'var(--text-primary)' }}>Messages</h3>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-gray-600"
+          className="chat-panel__close-button transition-all duration-300 hover:scale-110"
+          style={{ color: 'var(--text-secondary)' }}
           aria-label="Close chat"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,23 +47,32 @@ export function ChatPanel({ clientId, onClose }: ChatPanelProps) {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <div className="text-center text-gray-500 text-sm">
+      <div className="chat-panel__messages flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="chat-panel__placeholder text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           Chat feature coming soon...
         </div>
       </div>
 
       {/* Message Input */}
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex gap-2">
+      <div className="chat-panel__input-area p-4 border-t" style={{ borderColor: 'var(--glass-border)' }}>
+        <div className="chat-panel__input-wrapper flex gap-2">
           <input
             type="text"
             placeholder="Type a message..."
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="chat-panel__input flex-1 px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none"
+            style={{
+              background: 'rgba(255, 255, 255, 0.8)',
+              borderColor: 'var(--glass-border)',
+              color: 'var(--text-primary)'
+            }}
             disabled
           />
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="chat-panel__send-button px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+            style={{
+              background: 'rgba(0, 0, 0, 0.9)',
+              color: 'white'
+            }}
             disabled
           >
             Send

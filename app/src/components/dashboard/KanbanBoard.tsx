@@ -3,6 +3,7 @@
 import { useClients, Client } from "@/hooks/useClients";
 import { LoadingSpinner } from "@/components/ui/Loading";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 interface KanbanBoardProps {
   selectedClientId: string | null;
@@ -11,12 +12,12 @@ interface KanbanBoardProps {
 
 type ClientStatus = "INTAKE" | "PREPARATION" | "REVIEW" | "FILED" | "INVOICED";
 
-const columns: { status: ClientStatus; label: string; color: string }[] = [
-  { status: "INTAKE", label: "Intake", color: "bg-gray-100" },
-  { status: "PREPARATION", label: "Preparation", color: "bg-yellow-100" },
-  { status: "REVIEW", label: "Review", color: "bg-blue-100" },
-  { status: "FILED", label: "Filed", color: "bg-green-100" },
-  { status: "INVOICED", label: "Invoiced", color: "bg-purple-100" },
+const columns: { status: ClientStatus; label: string; bgColor: string; borderColor: string }[] = [
+  { status: "INTAKE", label: "Intake", bgColor: "rgba(0, 0, 0, 0.05)", borderColor: "rgba(0, 0, 0, 0.15)" },
+  { status: "PREPARATION", label: "Preparation", bgColor: "rgba(250, 204, 21, 0.15)", borderColor: "rgba(250, 204, 21, 0.4)" },
+  { status: "REVIEW", label: "Review", bgColor: "rgba(59, 130, 246, 0.15)", borderColor: "rgba(59, 130, 246, 0.4)" },
+  { status: "FILED", label: "Filed", bgColor: "rgba(34, 197, 94, 0.15)", borderColor: "rgba(34, 197, 94, 0.4)" },
+  { status: "INVOICED", label: "Invoiced", bgColor: "rgba(168, 85, 247, 0.15)", borderColor: "rgba(168, 85, 247, 0.4)" },
 ];
 
 export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardProps) {
@@ -31,9 +32,9 @@ export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardPro
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="kanban-board__loading flex items-center justify-center h-full">
         <LoadingSpinner size="lg" />
-        <span className="ml-3 text-lg text-gray-500">Loading board...</span>
+        <span className="ml-3 text-base sm:text-lg" style={{ color: 'var(--text-secondary)' }}>Loading board...</span>
       </div>
     );
   }
@@ -43,66 +44,85 @@ export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardPro
   }
 
   return (
-    <div className="h-full">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Client Workflow</h2>
-        <p className="text-gray-600 mt-1">
+    <div className="kanban-board h-full animate-fade-in">
+      <div className="kanban-board__header mb-6">
+        <h2 className="kanban-board__title text-xl sm:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          Client Workflow
+        </h2>
+        <p className="kanban-board__subtitle text-sm sm:text-base mt-1" style={{ color: 'var(--text-secondary)' }}>
           Manage clients through the tax preparation process
         </p>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 h-[calc(100%-5rem)]">
+      <div className="kanban-board__columns grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 h-[calc(100%-5rem)]">
         {columns.map((column) => {
           const columnClients = getClientsByStatus(column.status);
           return (
-            <div key={column.status} className="flex flex-col">
+            <div key={column.status} className="kanban-board__column flex flex-col animate-fade-in-delay">
               {/* Column Header */}
-              <div className={`${column.color} rounded-t-lg px-4 py-3 border-b-2 border-gray-300`}>
-                <h3 className="font-semibold text-gray-900">
+              <div
+                className="kanban-board__column-header rounded-t-lg px-3 sm:px-4 py-3 border-b-2"
+                style={{
+                  background: column.bgColor,
+                  borderColor: column.borderColor
+                }}
+              >
+                <h3 className="kanban-board__column-title font-bold text-sm sm:text-base" style={{ color: 'var(--text-primary)' }}>
                   {column.label}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="kanban-board__column-count text-xs sm:text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
                   {columnClients.length} {columnClients.length === 1 ? "client" : "clients"}
                 </p>
               </div>
 
               {/* Column Content */}
-              <div className="flex-1 bg-gray-50 rounded-b-lg p-2 space-y-2 overflow-y-auto">
-                {columnClients.map((client) => (
-                  <button
-                    key={client.id}
-                    onClick={() => onSelectClient(client.id)}
-                    className={`w-full text-left p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border-2 ${
-                      selectedClientId === client.id
-                        ? "border-blue-500"
-                        : "border-transparent"
-                    }`}
-                  >
-                    <h4 className="font-medium text-gray-900 text-sm mb-1">
-                      {client.name}
-                    </h4>
-                    <p className="text-xs text-gray-500 mb-2">
-                      Tax Year: {client.taxYear}
-                    </p>
+              <div
+                className="kanban-board__column-content flex-1 rounded-b-lg p-2 space-y-2 overflow-y-auto"
+                style={{ background: 'var(--background-dark)' }}
+              >
+                {columnClients.map((client) => {
+                  const isSelected = selectedClientId === client.id;
 
-                    {/* Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
-                      <div
-                        className="bg-blue-600 h-1.5 rounded-full"
-                        style={{ width: `${client.progressPercentage}%` }}
-                      />
-                    </div>
-
-                    {client.assignedTo && (
-                      <p className="text-xs text-gray-600">
-                        👤 {client.assignedTo.name}
+                  return (
+                    <button
+                      key={client.id}
+                      onClick={() => onSelectClient(client.id)}
+                      className="kanban-board__card w-full text-left p-3 rounded-lg transition-all duration-300 hover:scale-[1.02]"
+                      style={{
+                        background: 'var(--glass-bg)',
+                        border: `2px solid ${isSelected ? 'rgba(0, 0, 0, 0.6)' : 'var(--glass-border)'}`,
+                        boxShadow: isSelected ? '0 4px 12px 0 rgba(0, 0, 0, 0.1)' : '0 2px 8px 0 rgba(0, 0, 0, 0.08)'
+                      }}
+                    >
+                      <h4 className="kanban-board__card-title font-bold text-xs sm:text-sm mb-1" style={{ color: 'var(--text-primary)' }}>
+                        {client.name}
+                      </h4>
+                      <p className="kanban-board__card-year text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>
+                        Tax Year: {client.taxYear}
                       </p>
-                    )}
-                  </button>
-                ))}
+
+                      {/* Progress Bar */}
+                      <div className="kanban-board__card-progress-bg w-full rounded-full h-1.5 mb-2" style={{ background: 'rgba(0, 0, 0, 0.1)' }}>
+                        <div
+                          className="kanban-board__card-progress-fill h-1.5 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${client.progressPercentage}%`,
+                            background: 'rgba(0, 0, 0, 0.6)'
+                          }}
+                        />
+                      </div>
+
+                      {client.assignedTo && (
+                        <p className="kanban-board__card-assigned text-xs" style={{ color: 'var(--text-secondary)' }}>
+                          👤 {client.assignedTo.name}
+                        </p>
+                      )}
+                    </button>
+                  );
+                })}
 
                 {columnClients.length === 0 && (
-                  <div className="text-center py-8 text-gray-400 text-sm">
+                  <div className="kanban-board__column-empty text-center py-8 text-xs sm:text-sm" style={{ color: 'rgba(0, 0, 0, 0.4)' }}>
                     No clients in this stage
                   </div>
                 )}
