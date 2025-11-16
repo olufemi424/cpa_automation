@@ -1,0 +1,116 @@
+version: '3.8'
+
+name: cpa-automation
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14.2
+    container_name: cpa-automation-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=boilerplatedb_admin
+      - POSTGRES_PASSWORD=admin_password123
+      - POSTGRES_DB=cpa_automation_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./app/scripts/db/temp_local_db_scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U boilerplatedb_admin -d cpa_automation_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - cpa-network
+
+  # Redis for caching/sessions (optional but included)
+  redis:
+    image: redis/redis-stack:latest
+    container_name: cpa-automation-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - cpa-network
+
+  # Next.js Application
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: cpa-automation-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Database
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=boilerplatedb_admin
+      - DB_USERNAME=boilerplatedb_admin
+      - DB_PASSWORD=admin_password123
+      - DB_NAME=cpa_automation_db
+      - SCHEMA=cpa_automation
+      - DATABASE_URL=postgresql://boilerplatedb_admin:admin_password123@postgres:5432/cpa_automation_db?schema=cpa_automation
+      # Better Auth
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-your-secret-key-change-in-production}
+      - BETTER_AUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      # Node
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - cpa-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PgAdmin (optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:7.3
+    container_name: cpa-automation-pgadmin
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_CONFIG_LOGIN_BANNER="CPA Automation App"
+    volumes:
+      - ./app/scripts/pgadmin/servers.json:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - cpa-network
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+networks:
+  cpa-network:
+    driver: bridge

@@ -1,9 +1,35 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { rateLimit } from "@/lib/api/rateLimit";
 
-export async function GET() {
+// Rate limit: 100 requests per minute
+const limiter = rateLimit({ maxRequests: 100, windowMs: 60 * 1000 });
+
+export async function GET(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const rateLimitResult = limiter(request);
+    if (rateLimitResult) return rateLimitResult;
+
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get("status");
+    const search = searchParams.get("search");
+
+    // Build where clause
+    const where: any = {};
+    if (status && status !== "ALL") {
+      where.status = status;
+    }
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
     const clients = await prisma.clients.findMany({
+      where,
       include: {
         users_clients_assigned_to_idTousers: {
           select: {
@@ -18,7 +44,7 @@ export async function GET() {
       },
     });
 
-    const formattedClients = clients.map((client) => ({
+    const formattedClients = clients.map((client: any) => ({
       id: client.id,
       name: client.name,
       email: client.email,
@@ -40,11 +66,22 @@ export async function GET() {
       updatedAt: client.updated_at,
     }));
 
-    return NextResponse.json(formattedClients);
+    return NextResponse.json({
+      success: true,
+      data: formattedClients,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error("Failed to fetch clients:", error);
     return NextResponse.json(
-      { error: "Failed to fetch clients" },
+      {
+        success: false,
+        error: {
+          message: "Failed to fetch clients",
+          code: "FETCH_ERROR",
+        },
+        timestamp: new Date().toISOString(),
+      },
       { status: 500 }
     );
   }

@@ -194,6 +194,9 @@ CREATE TABLE messages (
 - ✅ Client search and filtering
 - ✅ Kanban board with 5 workflow stages
 - ✅ Client selection across panels
+- ✅ Error boundaries and error handling
+- ✅ Loading states with spinners
+- ✅ Custom hooks for data fetching
 - ⏳ Drag-and-drop status updates
 - ⏳ Real-time progress tracking
 
@@ -285,6 +288,10 @@ CREATE TABLE messages (
 
 ### Clients
 - `GET /api/clients` - List all clients (with filters) ✅
+  - ✅ Rate limiting (100 req/min)
+  - ✅ Search by name/email
+  - ✅ Filter by status
+  - ✅ Error handling with proper responses
 - `GET /api/clients/[id]` - Get client details ⏳
 - `POST /api/clients` - Create new client ⏳
 - `PATCH /api/clients/[id]` - Update client ⏳

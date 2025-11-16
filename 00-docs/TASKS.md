@@ -79,10 +79,11 @@
 - [✅] Create Kanban board component (1.5h)
 - [✅] Display clients in workflow columns (0.5h)
 - [✅] Add client API endpoint (0.5h)
-- [ ] Install @dnd-kit for drag-and-drop (Estimated: 0.5h)
-  - [ ] `npm install @dnd-kit/core @dnd-kit/sortable`
-  - [ ] Verify installation
-- [🔄] Implement drag-and-drop between columns (Estimated: 2h)
+- [✅] Install @dnd-kit for drag-and-drop (0.5h)
+- [✅] Add error handling and rate limiting to API (1h)
+- [✅] Create custom hooks for data fetching (1h)
+- [✅] Add loading and error UI components (0.5h)
+- [ ] Implement drag-and-drop between columns (Estimated: 2h)
   - [ ] Set up DndContext and SortableContext
   - [ ] Make client cards draggable
   - [ ] Handle drop events

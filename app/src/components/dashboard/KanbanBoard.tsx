@@ -1,6 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useClients, Client } from "@/hooks/useClients";
+import { LoadingSpinner } from "@/components/ui/Loading";
+import { ErrorState } from "@/components/ui/ErrorState";
 
 interface KanbanBoardProps {
   selectedClientId: string | null;
@@ -8,18 +10,6 @@ interface KanbanBoardProps {
 }
 
 type ClientStatus = "INTAKE" | "PREPARATION" | "REVIEW" | "FILED" | "INVOICED";
-
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-  status: ClientStatus;
-  taxYear: number;
-  progressPercentage: number;
-  assignedTo?: {
-    name: string;
-  };
-}
 
 const columns: { status: ClientStatus; label: string; color: string }[] = [
   { status: "INTAKE", label: "Intake", color: "bg-gray-100" },
@@ -30,25 +20,26 @@ const columns: { status: ClientStatus; label: string; color: string }[] = [
 ];
 
 export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardProps) {
-  const { data: clients, isLoading } = useQuery<Client[]>({
-    queryKey: ["clients"],
-    queryFn: async () => {
-      const response = await fetch("/api/clients");
-      if (!response.ok) throw new Error("Failed to fetch clients");
-      return response.json();
-    },
-  });
+  const { data: clients, isLoading, error, refetch } = useClients();
+
+  // Ensure clients is an array
+  const clientsArray = Array.isArray(clients) ? clients : [];
 
   const getClientsByStatus = (status: ClientStatus) => {
-    return clients?.filter((client) => client.status === status) || [];
+    return clientsArray.filter((client) => client.status === status);
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-lg text-gray-500">Loading board...</div>
+        <LoadingSpinner size="lg" />
+        <span className="ml-3 text-lg text-gray-500">Loading board...</span>
       </div>
     );
+  }
+
+  if (error) {
+    return <ErrorState message="Failed to load workflow board" retry={() => refetch()} />;
   }
 
   return (
@@ -93,7 +84,7 @@ export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardPro
                     <p className="text-xs text-gray-500 mb-2">
                       Tax Year: {client.taxYear}
                     </p>
-                    
+
                     {/* Progress Bar */}
                     <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
                       <div
@@ -101,7 +92,7 @@ export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardPro
                         style={{ width: `${client.progressPercentage}%` }}
                       />
                     </div>
-                    
+
                     {client.assignedTo && (
                       <p className="text-xs text-gray-600">
                         👤 {client.assignedTo.name}
@@ -109,7 +100,7 @@ export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardPro
                     )}
                   </button>
                 ))}
-                
+
                 {columnClients.length === 0 && (
                   <div className="text-center py-8 text-gray-400 text-sm">
                     No clients in this stage

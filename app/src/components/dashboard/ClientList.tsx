@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useClients, Client } from "@/hooks/useClients";
+import { LoadingSpinner } from "@/components/ui/Loading";
+import { ErrorState } from "@/components/ui/ErrorState";
 
 interface ClientListProps {
   selectedClientId: string | null;
@@ -9,18 +11,6 @@ interface ClientListProps {
 }
 
 type ClientStatus = "INTAKE" | "PREPARATION" | "REVIEW" | "FILED" | "INVOICED" | "COMPLETED";
-
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-  status: ClientStatus;
-  taxYear: number;
-  progressPercentage: number;
-  assignedTo?: {
-    name: string;
-  };
-}
 
 const statusColors: Record<ClientStatus, string> = {
   INTAKE: "bg-gray-100 text-gray-800",
@@ -35,16 +25,15 @@ export function ClientList({ selectedClientId, onSelectClient }: ClientListProps
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<ClientStatus | "ALL">("ALL");
 
-  const { data: clients, isLoading } = useQuery<Client[]>({
-    queryKey: ["clients"],
-    queryFn: async () => {
-      const response = await fetch("/api/clients");
-      if (!response.ok) throw new Error("Failed to fetch clients");
-      return response.json();
-    },
+  const { data: clients, isLoading, error, refetch } = useClients({
+    status: statusFilter !== "ALL" ? statusFilter : undefined,
+    search: searchQuery || undefined,
   });
 
-  const filteredClients = clients?.filter((client) => {
+  // Ensure clients is an array
+  const clientsArray = Array.isArray(clients) ? clients : [];
+
+  const filteredClients = clientsArray.filter((client: Client) => {
     const matchesSearch = client.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
@@ -81,7 +70,11 @@ export function ClientList({ selectedClientId, onSelectClient }: ClientListProps
       {/* Client List */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
-          <div className="p-4 text-center text-gray-500">Loading clients...</div>
+          <div className="p-4 text-center text-gray-500">
+            <LoadingSpinner /> Loading clients...
+          </div>
+        ) : error ? (
+          <ErrorState message="Failed to load clients" retry={() => refetch()} />
         ) : filteredClients && filteredClients.length > 0 ? (
           <div className="divide-y divide-gray-200">
             {filteredClients.map((client) => (
@@ -105,7 +98,7 @@ export function ClientList({ selectedClientId, onSelectClient }: ClientListProps
                 <div className="flex items-center justify-between mt-2">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                      statusColors[client.status]
+                      statusColors[client.status as ClientStatus] || "bg-gray-100 text-gray-800"
                     }`}
                   >
                     {client.status}

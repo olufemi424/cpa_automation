@@ -3,21 +3,23 @@
 import { useSession } from "@/lib/auth/auth-client";
 import { redirect } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Loading } from "@/components/ui/Loading";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
 
   if (isPending) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
+    return <Loading message="Loading your dashboard..." />;
   }
 
   if (!session) {
     redirect("/auth/login");
   }
 
-  return <DashboardLayout user={session.user} />;
+  return (
+    <ErrorBoundary>
+      <DashboardLayout user={session.user} />
+    </ErrorBoundary>
+  );
 }

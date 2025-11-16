@@ -37,26 +37,31 @@ app/src/
 - **Export named functions** for components: `export function ComponentName()`
 - **TypeScript interfaces** for all props: `interface ComponentProps { ... }`
 - **Colocation:** Keep related components in the same directory
+- **Error boundaries:** Wrap interactive features in `<ErrorBoundary>`
+- **Loading states:** Use `<Loading />` or `<LoadingSpinner />` components
+- **Error states:** Use `<ErrorState />` component with retry function
 
 ### 3. API Route Patterns
 ```typescript
 // app/src/app/api/[resource]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { successResponse, handleApiError, withErrorHandling } from "@/lib/api/response";
+import { rateLimit } from "@/lib/api/rateLimit";
 
-export async function GET() {
-  try {
+const limiter = rateLimit({ maxRequests: 100, windowMs: 60000 });
+
+export async function GET(request: NextRequest) {
+  return withErrorHandling(async () => {
+    const rateLimitResult = limiter(request);
+    if (rateLimitResult) return rateLimitResult;
+
     const data = await prisma.table.findMany({
       include: { relations: true },
     });
-    return NextResponse.json(formatResponse(data));
-  } catch (error) {
-    console.error("Error:", error);
-    return NextResponse.json(
-      { error: "Error message" },
-      { status: 500 }
-    );
-  }
+
+    return successResponse(formatResponse(data));
+  });
 }
 ```
 
@@ -70,6 +75,20 @@ const formatted = dbRecord.map(item => ({
   assignedToId: item.assigned_to_id,
   // ... etc
 }));
+```
+
+### 5. Environment Variables
+**Always use validated environment variables:**
+```typescript
+import { getEnv } from "@/lib/env";
+
+// In server-side code
+const env = getEnv();
+const dbUrl = env.DATABASE_URL;
+
+// Never use process.env directly
+// ❌ const url = process.env.DATABASE_URL;
+// ✅ const url = getEnv().DATABASE_URL;
 ```
 
 ### 5. Better Auth Integration
@@ -177,16 +196,37 @@ test: Add unit tests for document classification
 
 ### 12. Common Patterns
 
-#### Fetching Data with React Query
+#### Fetching Data with Custom Hooks
 ```typescript
-const { data, isLoading, error } = useQuery({
-  queryKey: ["clients", filters],
-  queryFn: async () => {
-    const res = await fetch("/api/clients?" + new URLSearchParams(filters));
-    if (!res.ok) throw new Error("Failed to fetch");
-    return res.json();
-  },
+// Use custom hooks instead of direct useQuery
+import { useClients, useClient } from "@/hooks/useClients";
+
+// Fetch all clients with filters
+const { data, isLoading, error } = useClients({
+  status: "INTAKE",
+  search: "john"
 });
+
+// Fetch single client
+const { data: client } = useClient(clientId);
+```
+
+#### Creating Custom Hooks
+```typescript
+// app/src/hooks/useResource.ts
+import { useQuery } from "@tanstack/react-query";
+
+export function useResource(id: string) {
+  return useQuery({
+    queryKey: ["resource", id],
+    queryFn: async () => {
+      const res = await fetch(`/api/resource/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
 ```
 
 #### Updating Data with Mutations
