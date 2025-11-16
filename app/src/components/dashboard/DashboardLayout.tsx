@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ClientList } from "./ClientList";
 import { KanbanBoard } from "./KanbanBoard";
 import { ChatPanel } from "./ChatPanel";
+import { signOut } from "@/lib/auth/auth-client";
 
 interface DashboardLayoutProps {
   user: {
@@ -18,6 +20,24 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ user }: DashboardLayoutProps) {
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      setIsSigningOut(true);
+      await signOut();
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      setIsSigningOut(false);
+    }
+  };
+
+  // Determine user role for conditional rendering
+  const isAdmin = user.role === "ADMIN";
+  const isCPA = user.role === "CPA";
+  const isClient = user.role === "CLIENT";
 
   return (
     <div className="dashboard min-h-screen" style={{ background: 'var(--background)' }}>
@@ -29,15 +49,29 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
       }}>
         <div className="dashboard__header-container px-4 sm:px-6 lg:px-8">
           <div className="dashboard__header-content flex items-center justify-between h-16">
-            <div className="dashboard__header-left flex items-center">
-              <h1 className="dashboard__title text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            <div className="dashboard__header-left flex items-center gap-3">
+              <h1 className="dashboard__title text-xl sm:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                 CPA Command Center
               </h1>
+              {isClient && (
+                <span className="dashboard__client-badge text-xs px-2 py-1 rounded-full" style={{
+                  background: 'rgba(59, 130, 246, 0.15)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  color: 'var(--text-primary)'
+                }}>
+                  Client Portal
+                </span>
+              )}
             </div>
-            <div className="dashboard__header-right flex items-center gap-4">
-              <span className="dashboard__user-name text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {user.name || user.email}
-              </span>
+            <div className="dashboard__header-right flex items-center gap-3">
+              <div className="dashboard__user-info hidden sm:flex flex-col items-end">
+                <span className="dashboard__user-name text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                  {user.name || user.email}
+                </span>
+                <span className="dashboard__user-email text-xs" style={{ color: 'var(--text-secondary)' }}>
+                  {user.email}
+                </span>
+              </div>
               <span className="dashboard__user-role inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all duration-300" style={{
                 background: 'rgba(0, 0, 0, 0.05)',
                 color: 'var(--text-primary)',
@@ -45,6 +79,18 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
               }}>
                 {user.role}
               </span>
+              <button
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                className="dashboard__signout-button px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.05)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                {isSigningOut ? "Signing out..." : "Sign Out"}
+              </button>
             </div>
           </div>
         </div>
@@ -52,43 +98,88 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
 
       {/* Main Content */}
       <div className="dashboard__main flex h-[calc(100vh-4rem)]">
-        {/* Client List Panel */}
-        <aside className="dashboard__sidebar dashboard__sidebar--clients w-80 border-r overflow-y-auto" style={{
-          background: 'var(--glass-bg)',
-          borderColor: 'var(--glass-border)'
-        }}>
-          <ClientList
-            selectedClientId={selectedClientId}
-            onSelectClient={setSelectedClientId}
-          />
-        </aside>
+        {/* CLIENT VIEW: Simplified single-client view */}
+        {isClient ? (
+          <>
+            <main className="dashboard__workspace flex-1 overflow-y-auto">
+              <div className="dashboard__workspace-content p-4 sm:p-6">
+                <div className="dashboard__client-view animate-fade-in">
+                  <div className="glass-card mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                      Welcome, {user.name}
+                    </h2>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      Track your tax preparation progress and communicate with your CPA
+                    </p>
+                  </div>
+                  <div className="glass-card">
+                    <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                      Your Tax Preparation Status
+                    </h3>
+                    <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
+                      Client portal features coming soon:
+                    </p>
+                    <ul className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <li>• View your preparation progress</li>
+                      <li>• Upload documents</li>
+                      <li>• Message your assigned CPA</li>
+                      <li>• Track tasks and deadlines</li>
+                      <li>• View and pay invoices</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </>
+        ) : (
+          /* ADMIN/CPA VIEW: Full Kanban board with client list */
+          <>
+            {/* Client List Panel */}
+            <aside className="dashboard__sidebar dashboard__sidebar--clients w-80 border-r overflow-y-auto" style={{
+              background: 'var(--glass-bg)',
+              borderColor: 'var(--glass-border)'
+            }}>
+              <ClientList
+                selectedClientId={selectedClientId}
+                onSelectClient={setSelectedClientId}
+              />
+            </aside>
 
-        {/* Main Workspace */}
-        <main className="dashboard__workspace flex-1 overflow-y-auto">
-          <div className="dashboard__workspace-content p-4 sm:p-6">
-            <KanbanBoard
-              selectedClientId={selectedClientId}
-              onSelectClient={setSelectedClientId}
-            />
-          </div>
-        </main>
+            {/* Main Workspace */}
+            <main className="dashboard__workspace flex-1 overflow-y-auto">
+              <div className="dashboard__workspace-content p-4 sm:p-6">
+                {isAdmin && (
+                  <div className="dashboard__admin-badge glass-card mb-4 p-3">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                      🔑 Admin View - You can see all clients and system data
+                    </p>
+                  </div>
+                )}
+                <KanbanBoard
+                  selectedClientId={selectedClientId}
+                  onSelectClient={setSelectedClientId}
+                />
+              </div>
+            </main>
 
-        {/* Chat Panel (Collapsible) */}
-        {isChatOpen && (
-          <aside className="dashboard__sidebar dashboard__sidebar--chat w-96 border-l overflow-y-auto animate-fade-in-fast" style={{
-            background: 'var(--glass-bg)',
-            borderColor: 'var(--glass-border)'
-          }}>
-            <ChatPanel
-              clientId={selectedClientId}
-              onClose={() => setIsChatOpen(false)}
-            />
-          </aside>
+            {/* Chat Panel (Collapsible) */}
+            {isChatOpen && (
+              <aside className="dashboard__sidebar dashboard__sidebar--chat w-96 border-l overflow-y-auto animate-fade-in-fast" style={{
+                background: 'var(--glass-bg)',
+                borderColor: 'var(--glass-border)'
+              }}>
+                <ChatPanel
+                  clientId={selectedClientId}
+                  onClose={() => setIsChatOpen(false)}
+                />
+              </aside>
+            )}
+          </>
         )}
       </div>
 
-      {/* Floating Chat Button */}
-      {!isChatOpen && selectedClientId && (
+      {/* Floating Chat Button - Only for ADMIN/CPA */}
+      {!isClient && !isChatOpen && selectedClientId && (
         <button
           onClick={() => setIsChatOpen(true)}
           className="dashboard__chat-button fixed bottom-6 right-6 p-4 rounded-full transition-all duration-300 hover:scale-110"

@@ -137,6 +137,10 @@
 - [✅] Build client list with search/filters (1h)
 - [✅] Integrate Kanban board into layout (0.5h)
 - [✅] Add chat panel placeholder (0.5h)
+- [✅] Implement sign-out button with Better Auth (0.5h)
+- [✅] Add role-based dashboard views (ADMIN/CPA/CLIENT) (1h)
+- [✅] Create authorization helpers and middleware (1h)
+- [✅] Add role-based API filtering for clients endpoint (0.5h)
 - [ ] Create client overview panel (Estimated: 2h)
   - [ ] Display selected client details
   - [ ] Document checklist with upload status
@@ -151,16 +155,38 @@
   - [ ] Task list
   - [ ] Message history
   - [ ] Edit client button
-- [ ] Add navigation menu (Estimated: 0.5h)
+  - [ ] Add navigation menu (Estimated: 0.5h)
   - [ ] Sidebar with links: Dashboard, Clients, Tasks, Messages, Reports
   - [ ] Active state styling
-  - [ ] User menu with logout
 
-**Subtotal:** 4-5 hours (2.5h complete, 1.5-2.5h remaining)
+**Subtotal:** 4-5 hours (5.5h complete, 0h remaining for core features)
 
-**Phase 2 Total:** 17-21 hours (estimated) | **Completed:** ~2.5 hours | **Remaining:** ~14.5-18.5 hours
+### 2.5 Authentication & Authorization ✅ COMPLETE
+- [✅] Implement sign-out functionality (0.5h)
+  - [✅] Add sign-out button to dashboard header
+  - [✅] Integrate Better Auth signOut method
+  - [✅] Redirect to login after sign-out
+  - [✅] Loading state during sign-out
+- [✅] Create role-based dashboard views (1h)
+  - [✅] CLIENT view: Simplified portal with progress tracking
+  - [✅] CPA view: Full Kanban board with assigned clients
+  - [✅] ADMIN view: Full Kanban board with all clients + admin badge
+  - [✅] Conditional rendering based on user role
+- [✅] Implement authorization helpers (1h)
+  - [✅] Create getAuthUser helper
+  - [✅] Create requireAuth middleware
+  - [✅] Create requireRole middleware
+  - [✅] Add role checking utilities (isAdmin, isCPA, isClient)
+  - [✅] Add canAccessClient permission checker
+- [✅] Add role-based API authorization (0.5h)
+  - [✅] Update clients API with role-based filtering
+  - [✅] ADMIN sees all clients
+  - [✅] CPA sees only assigned clients
+  - [✅] CLIENT sees only their own data
 
----
+**Subtotal:** 3 hours (Complete)
+
+**Phase 2 Total:** 17-21 hours (estimated) | **Completed:** ~8.5 hours | **Remaining:** ~8.5-12.5 hours---
 
 ## Phase 3: Advanced Features ⏳ PLANNED
 

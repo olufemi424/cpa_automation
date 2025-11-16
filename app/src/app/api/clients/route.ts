@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { rateLimit } from "@/lib/api/rateLimit";
+import { requireAuth, isAdmin, isCPA } from "@/lib/auth/authorization";
 
 // Rate limit: 100 requests per minute
 const limiter = rateLimit({ maxRequests: 100, windowMs: 60 * 1000 });
@@ -11,13 +12,28 @@ export async function GET(request: NextRequest) {
     const rateLimitResult = limiter(request);
     if (rateLimitResult) return rateLimitResult;
 
+    // Require authentication
+    const user = await requireAuth(request);
+    if (user instanceof NextResponse) return user;
+
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get("status");
     const search = searchParams.get("search");
 
-    // Build where clause
+    // Build where clause based on user role
     const where: any = {};
+    
+    // Role-based filtering
+    if (user.role === "CPA") {
+      // CPAs only see clients assigned to them
+      where.assigned_to_id = user.id;
+    } else if (user.role === "CLIENT") {
+      // Clients only see their own record
+      where.user_id = user.id;
+    }
+    // ADMIN sees all clients (no additional filter)
+    
     if (status && status !== "ALL") {
       where.status = status;
     }
