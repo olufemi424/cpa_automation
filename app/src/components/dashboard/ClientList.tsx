@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useClients, Client } from "@/hooks/useClients";
+import { UseQueryResult } from "@tanstack/react-query";
+import { Client } from "@/hooks/useClients";
 import { LoadingSpinner } from "@/components/ui/Loading";
 import { ErrorState } from "@/components/ui/ErrorState";
 
 interface ClientListProps {
   selectedClientId: string | null;
   onSelectClient: (clientId: string | null) => void;
+  clientsQuery: UseQueryResult<Client[], Error>;
 }
 
 type ClientStatus = "INTAKE" | "PREPARATION" | "REVIEW" | "FILED" | "INVOICED" | "COMPLETED";
@@ -21,14 +23,11 @@ const statusStyles: Record<ClientStatus, { bg: string; border: string }> = {
   COMPLETED: { bg: "rgba(16, 185, 129, 0.15)", border: "rgba(16, 185, 129, 0.3)" },
 };
 
-export function ClientList({ selectedClientId, onSelectClient }: ClientListProps) {
+export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: ClientListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<ClientStatus | "ALL">("ALL");
 
-  const { data: clients, isLoading, error, refetch } = useClients({
-    status: statusFilter !== "ALL" ? statusFilter : undefined,
-    search: searchQuery || undefined,
-  });
+  const { data: clients, isLoading, error, refetch } = clientsQuery;
 
   // Ensure clients is an array
   const clientsArray = Array.isArray(clients) ? clients : [];

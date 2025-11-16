@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ClientList } from "./ClientList";
 import { KanbanBoard } from "./KanbanBoard";
 import { ChatPanel } from "./ChatPanel";
 import { signOut } from "@/lib/auth/auth-client";
+import { useClients } from "@/hooks/useClients";
 
 interface DashboardLayoutProps {
   user: {
@@ -21,13 +21,16 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const router = useRouter();
+
+  // Fetch clients once at the parent level to avoid duplicate API calls
+  const clientsQuery = useClients();
 
   const handleSignOut = async () => {
+    setIsSigningOut(true);
     try {
-      setIsSigningOut(true);
       await signOut();
-      router.push("/auth/login");
+      // Force navigation to login
+      window.location.href = "/auth/login";
     } catch (error) {
       console.error("Sign out error:", error);
       setIsSigningOut(false);
@@ -142,6 +145,7 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
               <ClientList
                 selectedClientId={selectedClientId}
                 onSelectClient={setSelectedClientId}
+                clientsQuery={clientsQuery}
               />
             </aside>
 
@@ -158,6 +162,7 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
                 <KanbanBoard
                   selectedClientId={selectedClientId}
                   onSelectClient={setSelectedClientId}
+                  clientsQuery={clientsQuery}
                 />
               </div>
             </main>

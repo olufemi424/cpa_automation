@@ -1,13 +1,14 @@
 "use client";
 
-import { useClients, Client } from "@/hooks/useClients";
+import { UseQueryResult } from "@tanstack/react-query";
+import { Client } from "@/hooks/useClients";
 import { LoadingSpinner } from "@/components/ui/Loading";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { GlassCard } from "@/components/ui/GlassCard";
 
 interface KanbanBoardProps {
   selectedClientId: string | null;
   onSelectClient: (clientId: string) => void;
+  clientsQuery: UseQueryResult<Client[], Error>;
 }
 
 type ClientStatus = "INTAKE" | "PREPARATION" | "REVIEW" | "FILED" | "INVOICED";
@@ -20,8 +21,8 @@ const columns: { status: ClientStatus; label: string; bgColor: string; borderCol
   { status: "INVOICED", label: "Invoiced", bgColor: "rgba(168, 85, 247, 0.15)", borderColor: "rgba(168, 85, 247, 0.4)" },
 ];
 
-export function KanbanBoard({ selectedClientId, onSelectClient }: KanbanBoardProps) {
-  const { data: clients, isLoading, error, refetch } = useClients();
+export function KanbanBoard({ selectedClientId, onSelectClient, clientsQuery }: KanbanBoardProps) {
+  const { data: clients, isLoading, error, refetch } = clientsQuery;
 
   // Ensure clients is an array
   const clientsArray = Array.isArray(clients) ? clients : [];
