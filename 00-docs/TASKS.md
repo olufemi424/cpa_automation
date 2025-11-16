@@ -306,7 +306,37 @@
 
 **Subtotal:** 8-9 hours
 
-**Phase 3 Total:** 26-30 hours (estimated)
+### 3.6 Email Integration & User Onboarding
+- [ ] Integrate Resend API for transactional emails (Estimated: 1.5h)
+  - [ ] Set up Resend account and API key
+  - [ ] Create email service wrapper
+  - [ ] Configure email templates (HTML + plain text)
+  - [ ] Add rate limiting for email sending
+- [ ] Implement password setup flow for new users (Estimated: 2.5h)
+  - [ ] Generate secure password reset tokens (crypto.randomBytes)
+  - [ ] Store tokens in database with expiration (24 hours)
+  - [ ] Remove password field from user creation UI
+  - [ ] Send "Set Your Password" email on user creation
+  - [ ] Create /auth/set-password/[token] page
+  - [ ] Validate token and allow password creation
+  - [ ] Mark user as active after password setup
+- [ ] Build password reset functionality (Estimated: 2h)
+  - [ ] Create "Forgot Password" link on login page
+  - [ ] Build POST /api/auth/forgot-password endpoint
+  - [ ] Send password reset email with token
+  - [ ] Create /auth/reset-password/[token] page
+  - [ ] Validate token and update password
+  - [ ] Invalidate token after successful reset
+- [ ] Add email notification system foundation (Estimated: 2h)
+  - [ ] Create email template system (React Email or MJML)
+  - [ ] Build reusable email layouts
+  - [ ] Templates: Welcome, Password Setup, Password Reset, Status Updates
+  - [ ] Add email sending queue (future: BullMQ/Redis)
+  - [ ] Email delivery logging and retry logic
+
+**Subtotal:** 7-8 hours
+
+**Phase 3 Total:** 41-47 hours (estimated)
 
 ---
 
@@ -394,11 +424,11 @@
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
 | Phase 2 | ✅ Complete | 29.5h | 29.5h | 0h |
-| Phase 3 | ⏳ Planned | 34-39h | 0h | 34-39h |
+| Phase 3 | ⏳ Planned | 41-47h | 0h | 41-47h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **122-141h** | **~41.5h** | **~80.5-99.5h** |
+| **Total** | | **129-149h** | **~41.5h** | **~87.5-107.5h** |
 
 ---
 
