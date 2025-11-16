@@ -9,6 +9,33 @@ This is a **CPA tax preparation automation platform** built with Next.js 15, Pri
 - **Authentication:** Better Auth 1.3.34 with email/password (credentials stored in `accounts` table)
 - **State Management:** TanStack Query for server state, React hooks for UI state
 
+## Git Workflow
+
+### Branch Strategy
+- **main:** Production-ready code (default branch)
+- **feature/TASK-XXXX:** Feature branches for new work
+- **Format:** `feature/TASK-1000`, `feature/TASK-1001`, `feature/TASK-1002`, etc.
+
+### Starting New Work
+1. **Always create a feature branch** from `main` before implementing tasks
+2. **Branch naming:** Use sequential task numbers starting from `feature/TASK-1000`
+3. **Example workflow:**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/TASK-1000
+   # ... implement feature ...
+   git add -A
+   git commit -m "feat: Description of feature"
+   git push -u origin feature/TASK-1000
+   ```
+4. **After push:** Merge to main via pull request (or direct merge if approved)
+5. **Next task:** Increment counter → `feature/TASK-1001`, `feature/TASK-1002`, etc.
+
+### Current Task Counter
+- **Next feature branch:** `feature/TASK-1000`
+- **Increment this number** for each new task implementation
+
 ## Development Guidelines
 
 ### 1. File Organization

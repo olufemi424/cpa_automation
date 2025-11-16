@@ -140,7 +140,7 @@ export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: C
                       </p>
                     )}
                   </button>
-                  
+
                   {/* Add Task button - appears on hover */}
                   <button
                     onClick={(e) => {
