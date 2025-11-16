@@ -273,6 +273,31 @@
 
 **Subtotal:** 7-8 hours
 
+### 3.5 Real-Time Chat Enhancements
+- [ ] Implement WebSocket connection for instant messaging (Estimated: 3h)
+  - [ ] Set up WebSocket server (Socket.io or native WebSocket)
+  - [ ] Replace polling with WebSocket subscriptions
+  - [ ] Handle connection state (connected, reconnecting, disconnected)
+  - [ ] Add reconnection logic with exponential backoff
+- [ ] Add typing indicators (Estimated: 1h)
+  - [ ] Show "User is typing..." when other party types
+  - [ ] Debounce typing events
+  - [ ] Clear indicator after timeout
+- [ ] Implement read receipts (Estimated: 1.5h)
+  - [ ] Mark messages as read when viewed
+  - [ ] Show read status on sender's side
+  - [ ] Update is_read field in database
+- [ ] Add message threading support (Estimated: 2h)
+  - [ ] UI for replying to specific messages
+  - [ ] Thread view with parent message context
+  - [ ] Parent message ID already supported in schema
+- [ ] Create message search functionality (Estimated: 1.5h)
+  - [ ] Search input with autocomplete
+  - [ ] Full-text search across message content
+  - [ ] Jump to message in timeline
+
+**Subtotal:** 8-9 hours
+
 **Phase 3 Total:** 26-30 hours (estimated)
 
 ---
@@ -361,11 +386,11 @@
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
 | Phase 2 | 🔄 In Progress | 18-22h | ~14h | ~4-8h |
-| Phase 3 | ⏳ Planned | 26-30h | 0h | 26-30h |
+| Phase 3 | ⏳ Planned | 34-39h | 0h | 34-39h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **103-121h** | **~26h** | **~77-95h** |
+| **Total** | | **111-130h** | **~26h** | **~85-104h** |
 
 ---
 
