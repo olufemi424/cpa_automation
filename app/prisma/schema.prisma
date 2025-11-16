@@ -1,0 +1,353 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ai_faq_responses {
+  id          String   @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  question    String
+  keywords    String[]
+  response    String
+  category    String?  @db.VarChar(100)
+  usage_count Int?     @default(0)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([category], map: "idx_ai_faq_category")
+  @@index([keywords], map: "idx_ai_faq_keywords", type: Gin)
+}
+
+model audit_log {
+  id          String   @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  user_id     String?  @db.Uuid
+  action      String   @db.VarChar(100)
+  entity_type String?  @db.VarChar(100)
+  entity_id   String?  @db.Uuid
+  old_values  Json?
+  new_values  Json?
+  ip_address  String?  @db.VarChar(45)
+  user_agent  String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       users?   @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([action], map: "idx_audit_log_action")
+  @@index([created_at], map: "idx_audit_log_created_at")
+  @@index([user_id], map: "idx_audit_log_user_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model clients {
+  id                                  String        @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  user_id                             String?       @db.Uuid
+  name                                String        @db.VarChar(255)
+  email                               String        @db.Citext
+  phone                               String?       @db.VarChar(20)
+  entity_type                         entity_type
+  tax_year                            Int
+  status                              client_status @default(INTAKE)
+  assigned_to_id                      String?       @db.Uuid
+  business_name                       String?       @db.VarChar(255)
+  ein                                 String?       @db.VarChar(20)
+  ssn_last_four                       String?       @db.VarChar(4)
+  address_line1                       String?       @db.VarChar(255)
+  address_line2                       String?       @db.VarChar(255)
+  city                                String?       @db.VarChar(100)
+  state                               String?       @db.VarChar(50)
+  zip_code                            String?       @db.VarChar(10)
+  country                             String?       @default("USA") @db.VarChar(100)
+  notes                               String?
+  progress_percentage                 Int?          @default(0)
+  created_at                          DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at                          DateTime      @default(now()) @db.Timestamptz(6)
+  users_clients_assigned_to_idTousers users?        @relation("clients_assigned_to_idTousers", fields: [assigned_to_id], references: [id], onUpdate: NoAction)
+  users_clients_user_idTousers        users?        @relation("clients_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  documents                           documents[]
+  invoices                            invoices[]
+  messages                            messages[]
+  tasks                               tasks[]
+
+  @@index([assigned_to_id], map: "idx_clients_assigned_to")
+  @@index([entity_type], map: "idx_clients_entity_type")
+  @@index([status], map: "idx_clients_status")
+  @@index([tax_year], map: "idx_clients_tax_year")
+  @@index([user_id], map: "idx_clients_user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model documents {
+  id             String        @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  client_id      String        @db.Uuid
+  file_name      String        @db.VarChar(255)
+  file_url       String
+  file_size      BigInt?
+  file_type      String?       @db.VarChar(100)
+  document_type  document_type
+  is_verified    Boolean?      @default(false)
+  uploaded_by_id String?       @db.Uuid
+  notes          String?
+  uploaded_at    DateTime      @default(now()) @db.Timestamptz(6)
+  clients        clients       @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?        @relation(fields: [uploaded_by_id], references: [id], onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_documents_client_id")
+  @@index([document_type], map: "idx_documents_document_type")
+  @@index([uploaded_at], map: "idx_documents_uploaded_at")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model invoices {
+  id             String         @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  client_id      String         @db.Uuid
+  invoice_number String         @unique @db.VarChar(50)
+  amount         Decimal        @db.Decimal(10, 2)
+  tax            Decimal?       @default(0) @db.Decimal(10, 2)
+  total          Decimal        @db.Decimal(10, 2)
+  status         invoice_status @default(DRAFT)
+  due_date       DateTime?      @db.Date
+  paid_at        DateTime?      @db.Timestamptz(6)
+  payment_method String?        @db.VarChar(50)
+  notes          String?
+  created_by_id  String?        @db.Uuid
+  created_at     DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime       @default(now()) @db.Timestamptz(6)
+  clients        clients        @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?         @relation(fields: [created_by_id], references: [id], onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_invoices_client_id")
+  @@index([due_date], map: "idx_invoices_due_date")
+  @@index([invoice_number], map: "idx_invoices_invoice_number")
+  @@index([status], map: "idx_invoices_status")
+}
+
+model message_templates {
+  id            String   @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  name          String   @db.VarChar(255)
+  subject       String?  @db.VarChar(255)
+  content       String
+  category      String?  @db.VarChar(100)
+  variables     Json?
+  created_by_id String?  @db.Uuid
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+  users         users?   @relation(fields: [created_by_id], references: [id], onUpdate: NoAction)
+
+  @@index([category], map: "idx_message_templates_category")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model messages {
+  id                String              @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  client_id         String              @db.Uuid
+  sender_id         String?             @db.Uuid
+  sender_type       message_sender_type @default(USER)
+  content           String
+  is_read           Boolean?            @default(false)
+  read_at           DateTime?           @db.Timestamptz(6)
+  parent_message_id String?             @db.Uuid
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  clients           clients             @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  messages          messages?           @relation("messagesTomessages", fields: [parent_message_id], references: [id], onUpdate: NoAction)
+  other_messages    messages[]          @relation("messagesTomessages")
+  users             users?              @relation(fields: [sender_id], references: [id], onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_messages_client_id")
+  @@index([created_at], map: "idx_messages_created_at")
+  @@index([is_read], map: "idx_messages_is_read")
+  @@index([sender_id], map: "idx_messages_sender_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tasks {
+  id                                String      @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  client_id                         String      @db.Uuid
+  title                             String      @db.VarChar(255)
+  description                       String?
+  status                            task_status @default(INTAKE)
+  assigned_to_id                    String?     @db.Uuid
+  due_date                          DateTime?   @db.Date
+  priority                          String?     @default("MEDIUM") @db.VarChar(20)
+  is_completed                      Boolean?    @default(false)
+  completed_at                      DateTime?   @db.Timestamptz(6)
+  created_by_id                     String?     @db.Uuid
+  created_at                        DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at                        DateTime    @default(now()) @db.Timestamptz(6)
+  users_tasks_assigned_to_idTousers users?      @relation("tasks_assigned_to_idTousers", fields: [assigned_to_id], references: [id], onUpdate: NoAction)
+  clients                           clients     @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_tasks_created_by_idTousers  users?      @relation("tasks_created_by_idTousers", fields: [created_by_id], references: [id], onUpdate: NoAction)
+  time_logs                         time_logs[]
+
+  @@index([assigned_to_id], map: "idx_tasks_assigned_to")
+  @@index([client_id], map: "idx_tasks_client_id")
+  @@index([due_date], map: "idx_tasks_due_date")
+  @@index([is_completed], map: "idx_tasks_is_completed")
+  @@index([status], map: "idx_tasks_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model time_logs {
+  id          String   @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  task_id     String   @db.Uuid
+  user_id     String   @db.Uuid
+  hours       Decimal  @db.Decimal(10, 2)
+  hourly_rate Decimal? @db.Decimal(10, 2)
+  description String?
+  logged_at   DateTime @default(now()) @db.Timestamptz(6)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  tasks       tasks    @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([logged_at], map: "idx_time_logs_logged_at")
+  @@index([task_id], map: "idx_time_logs_task_id")
+  @@index([user_id], map: "idx_time_logs_user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model users {
+  id                                    String              @id @default(dbgenerated("public.uuid_generate_v4()")) @db.Uuid
+  email                                 String              @unique @db.Citext
+  password_hash                         String
+  name                                  String              @db.VarChar(255)
+  role                                  user_role           @default(CLIENT)
+  status                                user_status         @default(active)
+  emailVerified                         Boolean?            @default(false)
+  image                                 String?
+  phone                                 String?             @db.VarChar(20)
+  avatar_url                            String?
+  last_login_at                         DateTime?           @db.Timestamptz(6)
+  created_at                            DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at                            DateTime            @default(now()) @db.Timestamptz(6)
+  accounts                              accounts[]
+  audit_log                             audit_log[]
+  clients_clients_assigned_to_idTousers clients[]           @relation("clients_assigned_to_idTousers")
+  clients_clients_user_idTousers        clients[]           @relation("clients_user_idTousers")
+  documents                             documents[]
+  invoices                              invoices[]
+  message_templates                     message_templates[]
+  messages                              messages[]
+  session                               session[]
+  tasks_tasks_assigned_to_idTousers     tasks[]             @relation("tasks_assigned_to_idTousers")
+  tasks_tasks_created_by_idTousers      tasks[]             @relation("tasks_created_by_idTousers")
+  time_logs                             time_logs[]
+
+  @@index([email], map: "idx_users_email")
+  @@index([role], map: "idx_users_role")
+  @@index([status], map: "idx_users_status")
+}
+
+model session {
+  id        String   @id
+  userId    String   @db.Uuid
+  expiresAt DateTime @db.Timestamptz(6)
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([token], map: "idx_session_token")
+  @@index([userId], map: "idx_session_user_id")
+}
+
+model verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([identifier], map: "idx_verification_identifier")
+}
+
+model accounts {
+  id           String    @id
+  userId       String    @db.Uuid
+  accountId    String
+  providerId   String
+  password     String?
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime? @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @db.Timestamptz(6)
+  users        users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([providerId, accountId])
+  @@index([userId], map: "idx_accounts_user_id")
+}
+
+enum client_status {
+  INTAKE
+  PREPARATION
+  REVIEW
+  FILED
+  INVOICED
+  COMPLETED
+}
+
+enum document_type {
+  W2
+  MISC       @map("1099_MISC")
+  NEC        @map("1099_NEC")
+  INT        @map("1099_INT")
+  DIV        @map("1099_DIV")
+  SCHEDULE_C
+  RECEIPT
+  INVOICE
+  STATEMENT
+  ID
+  OTHER
+}
+
+enum entity_type {
+  INDIVIDUAL
+  LLC
+  S_CORP
+  C_CORP
+  PARTNERSHIP
+  TRUST
+  OTHER
+}
+
+enum invoice_status {
+  DRAFT
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum message_sender_type {
+  USER
+  AI
+  SYSTEM
+}
+
+enum task_status {
+  INTAKE
+  PREPARATION
+  REVIEW
+  FILED
+  INVOICED
+}
+
+enum user_role {
+  ADMIN
+  CPA
+  CLIENT
+}
+
+enum user_status {
+  active
+  inactive
+  pending
+}
