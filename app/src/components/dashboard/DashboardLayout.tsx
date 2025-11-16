@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Sidebar } from "./Sidebar";
 import { ClientList } from "./ClientList";
 import { KanbanBoard } from "./KanbanBoard";
 import { ChatPanel } from "./ChatPanel";
+import { ClientOverviewPanel } from "@/components/clients/ClientOverviewPanel";
 import { signOut } from "@/lib/auth/auth-client";
 import { useClients } from "@/hooks/useClients";
 
@@ -20,6 +22,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ user }: DashboardLayoutProps) {
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isOverviewOpen, setIsOverviewOpen] = useState(true);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Fetch clients once at the parent level to avoid duplicate API calls
@@ -39,11 +42,15 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
 
   // Determine user role for conditional rendering
   const isAdmin = user.role === "ADMIN";
-  const isCPA = user.role === "CPA";
   const isClient = user.role === "CLIENT";
 
   return (
-    <div className="dashboard min-h-screen" style={{ background: 'var(--background)' }}>
+    <div className="dashboard min-h-screen flex" style={{ background: 'var(--background)' }}>
+      {/* Sidebar Navigation */}
+      <Sidebar userRole={user.role || "CLIENT"} />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-h-screen">
       {/* Header */}
       <header className="dashboard__header sticky top-0 z-50 border-b" style={{
         background: 'var(--glass-bg)',
@@ -167,36 +174,83 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
               </div>
             </main>
 
-            {/* Chat Panel (Collapsible) */}
-            {isChatOpen && (
-              <aside className="dashboard__sidebar dashboard__sidebar--chat w-96 border-l overflow-y-auto animate-fade-in-fast" style={{
+            {/* Right Panel - Client Overview and Chat */}
+            {(isOverviewOpen || isChatOpen) && (
+              <aside className="dashboard__sidebar dashboard__sidebar--right w-96 border-l overflow-y-auto animate-fade-in-fast flex flex-col" style={{
                 background: 'var(--glass-bg)',
                 borderColor: 'var(--glass-border)'
               }}>
-                <ChatPanel
-                  clientId={selectedClientId}
-                  onClose={() => setIsChatOpen(false)}
-                />
+                {/* Panel Tabs */}
+                <div className="flex border-b" style={{ borderColor: 'var(--glass-border)' }}>
+                  <button
+                    onClick={() => {
+                      setIsOverviewOpen(true);
+                      setIsChatOpen(false);
+                    }}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                      isOverviewOpen && !isChatOpen
+                        ? 'border-b-2 border-blue-600'
+                        : ''
+                    }`}
+                    style={{
+                      color: isOverviewOpen && !isChatOpen ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    }}
+                  >
+                    Overview
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsChatOpen(true);
+                      setIsOverviewOpen(false);
+                    }}
+                    className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                      isChatOpen
+                        ? 'border-b-2 border-blue-600'
+                        : ''
+                    }`}
+                    style={{
+                      color: isChatOpen ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    }}
+                  >
+                    Messages
+                  </button>
+                </div>
+
+                {/* Panel Content */}
+                <div className="flex-1 overflow-y-auto p-4">
+                  {isOverviewOpen && !isChatOpen && (
+                    <ClientOverviewPanel clientId={selectedClientId} />
+                  )}
+                  {isChatOpen && (
+                    <ChatPanel
+                      clientId={selectedClientId}
+                      onClose={() => {
+                        setIsChatOpen(false);
+                        setIsOverviewOpen(true);
+                      }}
+                    />
+                  )}
+                </div>
               </aside>
             )}
           </>
         )}
       </div>
 
-      {/* Floating Chat Button - Only for ADMIN/CPA */}
-      {!isClient && !isChatOpen && selectedClientId && (
+      {/* Floating Panel Toggle Button - Only for ADMIN/CPA */}
+      {!isClient && !isOverviewOpen && !isChatOpen && selectedClientId && (
         <button
-          onClick={() => setIsChatOpen(true)}
-          className="dashboard__chat-button fixed bottom-6 right-6 p-4 rounded-full transition-all duration-300 hover:scale-110"
+          onClick={() => setIsOverviewOpen(true)}
+          className="dashboard__panel-button fixed bottom-6 right-6 p-4 rounded-full transition-all duration-300 hover:scale-110"
           style={{
             background: 'rgba(0, 0, 0, 0.9)',
             color: 'white',
             boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.15)'
           }}
-          aria-label="Open chat"
+          aria-label="Open client details"
         >
           <svg
-            className="dashboard__chat-icon w-6 h-6"
+            className="dashboard__panel-icon w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -205,11 +259,12 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
             />
           </svg>
         </button>
       )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+export interface Document {
+  id: string;
+  fileName: string;
+  documentType: string;
+  uploadDate: Date;
+  isVerified: boolean;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  status: string;
+  dueDate?: Date;
+}
+
 export interface Client {
   id: string;
   name: string;
@@ -18,6 +34,8 @@ export interface Client {
   progressPercentage: number;
   createdAt: Date;
   updatedAt: Date;
+  documents?: Document[];
+  tasks?: Task[];
 }
 
 interface ClientFilters {
@@ -55,7 +73,8 @@ export function useClient(clientId: string | null) {
       if (!response.ok) {
         throw new Error("Failed to fetch client");
       }
-      return response.json();
+      const result = await response.json();
+      return result.data || result; // Handle both wrapped and unwrapped response formats
     },
     enabled: !!clientId,
     staleTime: 5 * 60 * 1000,
