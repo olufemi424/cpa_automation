@@ -103,16 +103,19 @@
   - [✅] Format response with camelCase fields
   - [✅] Add authorization checks
   - [✅] Include progress percentage calculation
-- [ ] Add task creation UI (Estimated: 1.5h)
-  - [ ] Task form modal/drawer
-  - [ ] Fields: title, description, assignee, due date
-  - [ ] Submit to API
-- [ ] Build POST /api/tasks endpoint (Estimated: 1h)
-  - [ ] Create task linked to client
-  - [ ] Assign to CPA
-  - [ ] Set status and due date
+- [✅] Add task creation UI (1.5h)
+  - [✅] Task form modal with validation
+  - [✅] Fields: title, description, assignee, due date
+  - [✅] Submit to API with error handling
+  - [✅] Integrated "Add Task" button on client cards
+- [✅] Build POST /api/tasks endpoint (1h)
+  - [✅] Create task linked to client
+  - [✅] Validate assignee is CPA or ADMIN
+  - [✅] Set default status (INTAKE)
+  - [✅] Authorization checks with canAccessClient
+  - [✅] Format response with camelCase fields
 
-**Subtotal:** 5.5-6.5 hours (Complete)
+**Subtotal:** 8-9 hours (Complete)
 
 ### 2.3 Communication Hub
 - [ ] Create message list component (Estimated: 1.5h)

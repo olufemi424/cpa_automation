@@ -5,6 +5,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { Client } from "@/hooks/useClients";
 import { LoadingSpinner } from "@/components/ui/Loading";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { TaskFormModal } from "../tasks/TaskFormModal";
 
 interface ClientListProps {
   selectedClientId: string | null;
@@ -26,6 +27,11 @@ const statusStyles: Record<ClientStatus, { bg: string; border: string }> = {
 export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: ClientListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<ClientStatus | "ALL">("ALL");
+  const [taskModalState, setTaskModalState] = useState<{ isOpen: boolean; clientId: string; clientName: string }>({
+    isOpen: false,
+    clientId: "",
+    clientName: "",
+  });
 
   const { data: clients, isLoading, error, refetch } = clientsQuery;
 
@@ -91,25 +97,28 @@ export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: C
               const statusStyle = statusStyles[client.status as ClientStatus];
 
               return (
-                <button
+                <div
                   key={client.id}
-                  onClick={() => onSelectClient(client.id)}
-                  className="client-list__item w-full text-left p-4 transition-all duration-300 hover:scale-[1.01]"
-                  style={{
-                    background: isSelected ? 'var(--glass-bg-hover)' : 'transparent',
-                    borderLeft: isSelected ? '4px solid rgba(0, 0, 0, 0.6)' : '4px solid transparent'
-                  }}
+                  className="client-list__item-wrapper relative group"
                 >
-                  <div className="client-list__item-header flex items-start justify-between mb-2">
-                    <div className="client-list__item-info flex-1 min-w-0">
-                      <h3 className="client-list__item-name font-bold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
-                        {client.name}
-                      </h3>
-                      <p className="client-list__item-email text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
-                        {client.email}
-                      </p>
+                  <button
+                    onClick={() => onSelectClient(client.id)}
+                    className="client-list__item w-full text-left p-4 transition-all duration-300 hover:scale-[1.01]"
+                    style={{
+                      background: isSelected ? 'var(--glass-bg-hover)' : 'transparent',
+                      borderLeft: isSelected ? '4px solid rgba(0, 0, 0, 0.6)' : '4px solid transparent'
+                    }}
+                  >
+                    <div className="client-list__item-header flex items-start justify-between mb-2">
+                      <div className="client-list__item-info flex-1 min-w-0">
+                        <h3 className="client-list__item-name font-bold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
+                          {client.name}
+                        </h3>
+                        <p className="client-list__item-email text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
+                          {client.email}
+                        </p>
+                      </div>
                     </div>
-                  </div>
                   <div className="client-list__item-meta flex items-center justify-between mt-2">
                     <span
                       className="client-list__item-status inline-flex items-center rounded-full px-2 py-1 text-xs font-medium transition-all duration-300"
@@ -125,12 +134,24 @@ export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: C
                       {client.progressPercentage}%
                     </span>
                   </div>
-                  {client.assignedTo && (
-                    <p className="client-list__item-assigned text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                      Assigned to: {client.assignedTo.name}
-                    </p>
-                  )}
-                </button>
+                    {client.assignedTo && (
+                      <p className="client-list__item-assigned text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        Assigned to: {client.assignedTo.name}
+                      </p>
+                    )}
+                  </button>
+                  
+                  {/* Add Task button - appears on hover */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTaskModalState({ isOpen: true, clientId: client.id, clientName: client.name });
+                    }}
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded shadow-md"
+                  >
+                    + Task
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -142,6 +163,14 @@ export function ClientList({ selectedClientId, onSelectClient, clientsQuery }: C
           </div>
         )}
       </div>
+
+      {/* Task Form Modal */}
+      <TaskFormModal
+        isOpen={taskModalState.isOpen}
+        onClose={() => setTaskModalState({ isOpen: false, clientId: "", clientName: "" })}
+        clientId={taskModalState.clientId}
+        clientName={taskModalState.clientName}
+      />
     </div>
   );
 }
