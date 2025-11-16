@@ -117,33 +117,39 @@
 
 **Subtotal:** 8-9 hours (Complete)
 
-### 2.3 Communication Hub
-- [ ] Create message list component (Estimated: 1.5h)
-  - [ ] Display messages in chat panel
-  - [ ] Show sender, timestamp, read status
-  - [ ] Auto-scroll to latest message
-- [ ] Build message input component (Estimated: 0.5h)
-  - [ ] Text input with send button
-  - [ ] Character counter
-  - [ ] Enter to send (Shift+Enter for newline)
-- [ ] Implement GET /api/messages endpoint (Estimated: 0.5h)
-  - [ ] Fetch messages for client
-  - [ ] Include sender info
-  - [ ] Sort by timestamp
-- [ ] Implement POST /api/messages endpoint (Estimated: 1h)
-  - [ ] Create message record
-  - [ ] Mark as unread for recipient
-  - [ ] Return created message
-- [ ] Add message templates (Estimated: 1h)
-  - [ ] Pre-written templates for common scenarios
-  - [ ] Template picker UI
-  - [ ] Variable substitution (client name, etc.)
-- [ ] Mock AI FAQ responses (Estimated: 1.5h)
-  - [ ] Pattern matching for common questions
-  - [ ] Auto-suggest responses
-  - [ ] CPA can edit before sending
+### 2.3 Communication Hub ✅ COMPLETE
+- [✅] Implement GET /api/messages endpoint (0.5h)
+  - [✅] Fetch messages for client with authorization
+  - [✅] Include sender info from users table
+  - [✅] Sort by timestamp ascending
+  - [✅] Format response with camelCase fields
+- [✅] Implement POST /api/messages endpoint (1h)
+  - [✅] Create message record with client_id and sender_id
+  - [✅] Mark as unread by default
+  - [✅] Validate content length (max 5000 characters)
+  - [✅] Support parent message ID for threading
+  - [✅] Return formatted message with sender info
+- [✅] Create message list component (1.5h)
+  - [✅] Display messages with sender name and avatar
+  - [✅] Show timestamp with relative formatting
+  - [✅] Different styling for current user vs others
+  - [✅] Auto-scroll to latest message on new messages
+  - [✅] Date headers to group messages by day
+- [✅] Build message input component (0.5h)
+  - [✅] Textarea with auto-resize
+  - [✅] Character counter (5000 max)
+  - [✅] Enter to send (Shift+Enter for newline)
+  - [✅] Send button with loading state
+  - [✅] Error handling with retry
+- [✅] Integrate into ChatPanel (0.5h)
+  - [✅] Create useMessages custom hook with TanStack Query
+  - [✅] Create useSendMessage mutation hook
+  - [✅] Polling every 30 seconds for new messages
+  - [✅] Optimistic updates on send
+  - [ ] Add message templates (Future enhancement)
+  - [ ] Mock AI FAQ responses (Future enhancement)
 
-**Subtotal:** 4-5 hours
+**Subtotal:** 4 hours (Complete)
 
 ### 2.4 Client Dashboard
 - [✅] Create dashboard layout component (0.5h)
