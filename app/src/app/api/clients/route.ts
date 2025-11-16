@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { rateLimit } from "@/lib/api/rateLimit";
-import { requireAuth, isAdmin, isCPA } from "@/lib/auth/authorization";
+import { requireAuth} from "@/lib/auth/authorization";
+import { ClientStatus } from "@/types";
 
 // Rate limit: 100 requests per minute
 const limiter = rateLimit({ maxRequests: 100, windowMs: 60 * 1000 });
@@ -22,8 +24,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search");
 
     // Build where clause based on user role
-    const where: any = {};
-    
+    const where: Prisma.clientsWhereInput = {};
+
     // Role-based filtering
     if (user.role === "CPA") {
       // CPAs only see clients assigned to them
@@ -33,9 +35,9 @@ export async function GET(request: NextRequest) {
       where.user_id = user.id;
     }
     // ADMIN sees all clients (no additional filter)
-    
+
     if (status && status !== "ALL") {
-      where.status = status;
+      where.status = status as ClientStatus;
     }
     if (search) {
       where.OR = [
@@ -60,7 +62,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const formattedClients = clients.map((client: any) => ({
+    const formattedClients = clients.map((client) => ({
       id: client.id,
       name: client.name,
       email: client.email,

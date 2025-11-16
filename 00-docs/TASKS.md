@@ -83,16 +83,26 @@
 - [✅] Add error handling and rate limiting to API (1h)
 - [✅] Create custom hooks for data fetching (1h)
 - [✅] Add loading and error UI components (0.5h)
-- [ ] Implement drag-and-drop between columns (Estimated: 2h)
-  - [ ] Set up DndContext and SortableContext
-  - [ ] Make client cards draggable
-  - [ ] Handle drop events
-  - [ ] Optimistic UI updates
-- [ ] Create PATCH /api/clients/[id] endpoint (Estimated: 1h)
-  - [ ] Validate client ID and status
-  - [ ] Update client status in database
-  - [ ] Recalculate progress percentage
-  - [ ] Return updated client
+- [✅] Implement drag-and-drop between columns (2h)
+  - [✅] Set up DndContext and SortableContext
+  - [✅] Make client cards draggable with useSortable
+  - [✅] Handle drop events with handleDragEnd
+  - [✅] Optimistic UI updates with TanStack Query mutations
+  - [✅] Add drag overlay for visual feedback
+  - [✅] Create DroppableColumn component with useDroppable
+- [✅] Create PATCH /api/clients/[id] endpoint (1h)
+  - [✅] Validate client ID and status
+  - [✅] Update client status in database
+  - [✅] Recalculate progress percentage automatically
+  - [✅] Return updated client with formatted response
+  - [✅] Add authorization checks with canAccessClient
+  - [✅] Fix TypeScript errors with ApiResponse type system
+  - [✅] Move rate limiting and auth checks outside withErrorHandling wrapper
+- [✅] Create GET /api/clients/[id] endpoint (0.5h)
+  - [✅] Fetch single client with relations (documents, tasks)
+  - [✅] Format response with camelCase fields
+  - [✅] Add authorization checks
+  - [✅] Include progress percentage calculation
 - [ ] Add task creation UI (Estimated: 1.5h)
   - [ ] Task form modal/drawer
   - [ ] Fields: title, description, assignee, due date
@@ -102,7 +112,7 @@
   - [ ] Assign to CPA
   - [ ] Set status and due date
 
-**Subtotal:** 5-6 hours (2.5h complete, 2.5-3.5h remaining)
+**Subtotal:** 5.5-6.5 hours (Complete)
 
 ### 2.3 Communication Hub
 - [ ] Create message list component (Estimated: 1.5h)
@@ -186,11 +196,49 @@
 
 **Subtotal:** 3 hours (Complete)
 
-**Phase 2 Total:** 17-21 hours (estimated) | **Completed:** ~8.5 hours | **Remaining:** ~8.5-12.5 hours---
+**Phase 2 Total:** 18-22 hours (estimated) | **Completed:** ~14 hours | **Remaining:** ~4-8 hours
+
+---
 
 ## Phase 3: Advanced Features ⏳ PLANNED
 
-### 3.1 Document Management
+### 3.1 User Management (Admin)
+- [ ] Create admin user management UI (Estimated: 3h)
+  - [ ] User list page with search and filters
+  - [ ] User creation form (email, password, role selection)
+  - [ ] User edit modal
+  - [ ] User deletion with confirmation
+  - [ ] Role badge indicators
+  - [ ] Active/inactive status toggle
+- [ ] Build POST /api/admin/users endpoint (Estimated: 1h)
+  - [ ] Validate admin authentication with requireRole('ADMIN')
+  - [ ] Hash password with bcrypt
+  - [ ] Create user record in database
+  - [ ] Create accounts record for credentials provider
+  - [ ] Return created user (exclude password)
+- [ ] Build GET /api/admin/users endpoint (Estimated: 0.5h)
+  - [ ] Fetch all users with role filtering
+  - [ ] Include account information
+  - [ ] Exclude sensitive data (passwords)
+  - [ ] Sort by creation date
+- [ ] Build PATCH /api/admin/users/[id] endpoint (Estimated: 1h)
+  - [ ] Update user profile (name, email, role)
+  - [ ] Optional password reset
+  - [ ] Validate role changes (prevent last admin deletion)
+  - [ ] Return updated user
+- [ ] Build DELETE /api/admin/users/[id] endpoint (Estimated: 0.5h)
+  - [ ] Soft delete or archive user
+  - [ ] Prevent deletion of last admin
+  - [ ] Handle cascade deletion of related data
+  - [ ] Return success status
+- [ ] Add CPA assignment management (Estimated: 1.5h)
+  - [ ] Bulk client reassignment UI
+  - [ ] CPA workload visibility
+  - [ ] Auto-assignment algorithm settings
+
+**Subtotal:** 7-8 hours
+
+### 3.2 Document Management
 - [ ] Implement document preview (PDF viewer) (Estimated: 2h)
 - [ ] Add document version history (Estimated: 1.5h)
 - [ ] Create document verification workflow (Estimated: 2h)
@@ -199,7 +247,7 @@
 
 **Subtotal:** 6-7 hours
 
-### 3.2 Task Automation
+### 3.3 Task Automation
 - [ ] Auto-create tasks based on client entity type (Estimated: 2h)
 - [ ] Implement task due date reminders (Estimated: 1.5h)
 - [ ] Add task priority levels (Estimated: 1h)
@@ -208,7 +256,7 @@
 
 **Subtotal:** 6-7 hours
 
-### 3.3 Notifications
+### 3.4 Notifications
 - [ ] Create notification system (in-app) (Estimated: 2h)
 - [ ] Add email notifications for status changes (Estimated: 2h)
 - [ ] Implement real-time updates (WebSockets/Polling) (Estimated: 3h)
@@ -216,7 +264,7 @@
 
 **Subtotal:** 7-8 hours
 
-**Phase 3 Total:** 19-22 hours (estimated)
+**Phase 3 Total:** 26-30 hours (estimated)
 
 ---
 
@@ -303,12 +351,12 @@
 | Phase | Status | Time Estimate | Time Spent | Remaining |
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
-| Phase 2 | 🔄 In Progress | 17-21h | ~2.5h | ~14.5-18.5h |
-| Phase 3 | ⏳ Planned | 19-22h | 0h | 19-22h |
+| Phase 2 | 🔄 In Progress | 18-22h | ~14h | ~4-8h |
+| Phase 3 | ⏳ Planned | 26-30h | 0h | 26-30h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **95-112h** | **~14.5h** | **~80.5-97.5h** |
+| **Total** | | **103-121h** | **~26h** | **~77-95h** |
 
 ---
 

@@ -24,7 +24,7 @@ CREATE TABLE users (
 
 The database is currently seeded with:
 - **1 ADMIN**: `admin@cpacommand.com` / `password123`
-- **3 CPAs**: 
+- **3 CPAs**:
   - `sarah.cpa@cpacommand.com` / `password123`
   - `mike.cpa@cpacommand.com` / `password123`
   - `jennifer.cpa@cpacommand.com` / `password123`
