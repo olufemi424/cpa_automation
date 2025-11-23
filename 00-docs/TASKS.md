@@ -217,43 +217,43 @@
 
 ---
 
-## Phase 3: Advanced Features ⏳ PLANNED
+## Phase 3: Advanced Features 🔄 IN PROGRESS
 
 ### 3.1 User Management (Admin)
-- [ ] Create admin user management UI (Estimated: 3h)
-  - [ ] User list page with search and filters
-  - [ ] User creation form (email, password, role selection)
-  - [ ] User edit modal
-  - [ ] User deletion with confirmation
-  - [ ] Role badge indicators
-  - [ ] Active/inactive status toggle
-- [ ] Build POST /api/admin/users endpoint (Estimated: 1h)
-  - [ ] Validate admin authentication with requireRole('ADMIN')
-  - [ ] Hash password with bcrypt
-  - [ ] Create user record in database
-  - [ ] Create accounts record for credentials provider
-  - [ ] Return created user (exclude password)
-- [ ] Build GET /api/admin/users endpoint (Estimated: 0.5h)
-  - [ ] Fetch all users with role filtering
-  - [ ] Include account information
-  - [ ] Exclude sensitive data (passwords)
-  - [ ] Sort by creation date
-- [ ] Build PATCH /api/admin/users/[id] endpoint (Estimated: 1h)
-  - [ ] Update user profile (name, email, role)
-  - [ ] Optional password reset
-  - [ ] Validate role changes (prevent last admin deletion)
-  - [ ] Return updated user
-- [ ] Build DELETE /api/admin/users/[id] endpoint (Estimated: 0.5h)
-  - [ ] Soft delete or archive user
-  - [ ] Prevent deletion of last admin
-  - [ ] Handle cascade deletion of related data
-  - [ ] Return success status
+- [✅] Create admin user management UI (Completed: 3h)
+  - [✅] User list page with search and filters
+  - [✅] User creation form (email, password, role selection)
+  - [✅] User edit modal
+  - [✅] User deletion with confirmation
+  - [✅] Role badge indicators
+  - [ ] Active/inactive status toggle (Not implemented)
+- [✅] Build POST /api/admin/users endpoint (Completed: 1h)
+  - [✅] Validate admin authentication with requireRole('ADMIN')
+  - [✅] Hash password with bcrypt
+  - [✅] Create user record in database
+  - [✅] Create accounts record for credentials provider
+  - [✅] Return created user (exclude password)
+- [✅] Build GET /api/admin/users endpoint (Completed: 0.5h)
+  - [✅] Fetch all users with role filtering
+  - [✅] Include account information
+  - [✅] Exclude sensitive data (passwords)
+  - [✅] Sort by creation date
+- [✅] Build PATCH /api/admin/users/[id] endpoint (Completed: 1h)
+  - [✅] Update user profile (name, email, role)
+  - [✅] Optional password reset
+  - [✅] Validate role changes (prevent last admin deletion)
+  - [✅] Return updated user
+- [✅] Build DELETE /api/admin/users/[id] endpoint (Completed: 0.5h)
+  - [✅] Soft delete or archive user
+  - [✅] Prevent deletion of last admin
+  - [✅] Handle cascade deletion of related data
+  - [✅] Return success status
 - [ ] Add CPA assignment management (Estimated: 1.5h)
   - [ ] Bulk client reassignment UI
   - [ ] CPA workload visibility
   - [ ] Auto-assignment algorithm settings
 
-**Subtotal:** 7-8 hours
+**Subtotal:** 6 hours completed, 1.5 hours remaining (Active/inactive toggle not implemented)
 
 ### 3.2 Document Management
 - [ ] Implement document preview (PDF viewer) (Estimated: 2h)
@@ -469,11 +469,11 @@
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
 | Phase 2 | ✅ Complete | 29.5h | 29.5h | 0h |
-| Phase 3 | ⏳ Planned | 54-61h | 0h | 54-61h |
+| Phase 3 | 🔄 In Progress | 54-61h | 6h | 48-55h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **142-162h** | **~41.5h** | **~100.5-120.5h** |
+| **Total** | | **142-162h** | **~47.5h** | **~94.5-114.5h** |
 
 ---
 
