@@ -336,7 +336,52 @@
 
 **Subtotal:** 7-8 hours
 
-**Phase 3 Total:** 41-47 hours (estimated)
+### 3.7 Client Portal Features
+- [ ] Build client-specific dashboard view (Estimated: 3h)
+  - [ ] Personal welcome section with client name
+  - [ ] Single-case progress visualization (timeline or stepper)
+  - [ ] Document upload status card
+  - [ ] Task checklist with completion indicators
+  - [ ] Assigned CPA contact card with photo and details
+  - [ ] Next steps/action items section
+  - [ ] Mobile-responsive layout
+- [ ] Create client document upload interface (Estimated: 2.5h)
+  - [ ] Client-facing drag-and-drop upload component
+  - [ ] Document category selection (W2, 1099, receipts, etc.)
+  - [ ] Upload history with timestamps
+  - [ ] Document status indicators (pending review, approved, needs correction)
+  - [ ] File size validation and progress bars
+  - [ ] Success/error notifications
+- [ ] Implement client task view (Estimated: 2h)
+  - [ ] Task list filtered to client's case only
+  - [ ] Task status with visual indicators
+  - [ ] Due date highlighting (upcoming, overdue)
+  - [ ] Task completion action (if applicable)
+  - [ ] Empty state for no tasks
+- [ ] Build client messaging interface (Estimated: 2.5h)
+  - [ ] Chat interface with assigned CPA only
+  - [ ] Message send and receive
+  - [ ] Unread message counter
+  - [ ] Message timestamp and read receipts
+  - [ ] File attachment support in messages
+  - [ ] Quick response templates for common questions
+- [ ] Create client invoice/billing view (Estimated: 2h)
+  - [ ] Invoice list with status (paid, pending, overdue)
+  - [ ] Invoice detail modal with line items
+  - [ ] Payment history
+  - [ ] "Pay Now" button integration placeholder (Stripe/payment gateway)
+  - [ ] Download invoice as PDF
+  - [ ] Payment receipt generation
+- [ ] Add client notifications center (Estimated: 1.5h)
+  - [ ] Notification bell icon with unread count
+  - [ ] Dropdown with recent notifications
+  - [ ] Notification types: status updates, new messages, tasks assigned, invoices
+  - [ ] Mark as read functionality
+  - [ ] Link to relevant sections from notification
+
+**Subtotal:** 13-14 hours
+
+**Phase 3 Total:** 54-61 hours (estimated)
 
 ---
 
@@ -424,11 +469,11 @@
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
 | Phase 2 | ✅ Complete | 29.5h | 29.5h | 0h |
-| Phase 3 | ⏳ Planned | 41-47h | 0h | 41-47h |
+| Phase 3 | ⏳ Planned | 54-61h | 0h | 54-61h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **129-149h** | **~41.5h** | **~87.5-107.5h** |
+| **Total** | | **142-162h** | **~41.5h** | **~100.5-120.5h** |
 
 ---
 
