@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useClient } from "@/hooks/useClients";
 import { LoadingSpinner } from "@/components/ui/Loading";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -66,44 +67,29 @@ export default function ClientProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push("/dashboard")}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
-              </button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{client.name}</h1>
-                <p className="text-sm text-gray-500">{client.email}</p>
-              </div>
+    <div className="min-h-full">
+      {/* Client Header Card */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{client.name}</h2>
+              <p className="text-sm text-gray-500 mt-1">{client.email}</p>
             </div>
             <div className="flex items-center space-x-3">
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(client.status)}`}>
                 {client.status}
               </span>
-              <button
-                onClick={() => alert("Edit functionality coming soon")}
+              <Link
+                href={`/dashboard/clients/${client.id}/edit`}
                 className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Edit Client
-              </button>
+              </Link>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Progress Bar */}
       <div className="bg-white border-b border-gray-200">
