@@ -82,13 +82,6 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
                   {user.email}
                 </span>
               </div>
-              <span className="dashboard__user-role inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all duration-300" style={{
-                background: 'rgba(0, 0, 0, 0.05)',
-                color: 'var(--text-primary)',
-                border: '1px solid rgba(0, 0, 0, 0.1)'
-              }}>
-                {user.role}
-              </span>
               <button
                 onClick={handleSignOut}
                 disabled={isSigningOut}
