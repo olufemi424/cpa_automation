@@ -57,6 +57,30 @@ export async function GET(request: NextRequest) {
             email: true,
           },
         },
+        documents: {
+          select: {
+            id: true,
+            file_name: true,
+            document_type: true,
+            uploaded_at: true,
+            is_verified: true,
+          },
+          orderBy: {
+            uploaded_at: "desc",
+          },
+        },
+        tasks: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            status: true,
+            due_date: true,
+          },
+          orderBy: {
+            created_at: "desc",
+          },
+        },
       },
       orderBy: {
         created_at: "desc",
@@ -83,6 +107,20 @@ export async function GET(request: NextRequest) {
       progressPercentage: client.progress_percentage,
       createdAt: client.created_at,
       updatedAt: client.updated_at,
+      documents: client.documents.map((doc) => ({
+        id: doc.id,
+        fileName: doc.file_name,
+        documentType: doc.document_type,
+        uploadDate: doc.uploaded_at,
+        isVerified: doc.is_verified,
+      })),
+      tasks: client.tasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        dueDate: task.due_date,
+      })),
     }));
 
     return NextResponse.json({

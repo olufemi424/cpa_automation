@@ -79,13 +79,6 @@ body::before {
   transition: all 300ms ease;
 }
 
-.glass-card:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
-  transform: scale(1.01);
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

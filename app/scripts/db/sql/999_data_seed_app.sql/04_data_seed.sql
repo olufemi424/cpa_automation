@@ -39,7 +39,11 @@ INSERT INTO cpa_automation.users (id, email, password_hash, name, role, status, 
 ('00000000-0000-0000-0000-000000000017', 'sophia.lee@example.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Sophia Lee', 'CLIENT', 'active', '555-1008'),
 ('00000000-0000-0000-0000-000000000018', 'oliver.johnson@techstartup.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Oliver Johnson', 'CLIENT', 'active', '555-1009'),
 ('00000000-0000-0000-0000-000000000019', 'mia.anderson@smallbiz.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Mia Anderson', 'CLIENT', 'active', '555-1010'),
-('00000000-0000-0000-0000-000000000020', 'noah.thomas@realestate.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Noah Thomas', 'CLIENT', 'active', '555-1011');
+('00000000-0000-0000-0000-000000000020', 'noah.thomas@realestate.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Noah Thomas', 'CLIENT', 'active', '555-1011'),
+('00000000-0000-0000-0000-000000000021', 'patricia.white@example.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Patricia White', 'CLIENT', 'active', '555-1012'),
+('00000000-0000-0000-0000-000000000022', 'robert.green@example.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Robert Green', 'CLIENT', 'active', '555-1013'),
+('00000000-0000-0000-0000-000000000023', 'linda.taylor@example.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'Linda Taylor', 'CLIENT', 'active', '555-1014'),
+('00000000-0000-0000-0000-000000000024', 'james.moore@example.com', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.', 'James Moore', 'CLIENT', 'active', '555-1015');
 
 /* ----------------------------------------------------------------------
    ACCOUNTS: Credential accounts for Better Auth email/password
@@ -64,7 +68,11 @@ INSERT INTO cpa_automation.accounts (id, "userId", "accountId", "providerId", pa
 ('acc-sophia', '00000000-0000-0000-0000-000000000017', '00000000-0000-0000-0000-000000000017', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
 ('acc-oliver', '00000000-0000-0000-0000-000000000018', '00000000-0000-0000-0000-000000000018', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
 ('acc-mia', '00000000-0000-0000-0000-000000000019', '00000000-0000-0000-0000-000000000019', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
-('acc-noah', '00000000-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000020', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.');
+('acc-noah', '00000000-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000020', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
+('acc-patricia', '00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000021', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
+('acc-robert', '00000000-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000022', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
+('acc-linda', '00000000-0000-0000-0000-000000000023', '00000000-0000-0000-0000-000000000023', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.'),
+('acc-james', '00000000-0000-0000-0000-000000000024', '00000000-0000-0000-0000-000000000024', 'credential', '$2b$10$aq3zWwIet9/CyGjF6zKmV.2UJgq/vMANrUJlh6WLSOC3AJEbfFlg.');
 
 /* ----------------------------------------------------------------------
    CLIENTS: Create demo clients in various workflow stages
@@ -88,12 +96,12 @@ INSERT INTO cpa_automation.clients (id, user_id, name, email, phone, entity_type
 -- FILED (3 clients)
 ('10000000-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000019', 'Mia Anderson', 'mia.anderson@smallbiz.com', '555-1010', 'LLC', 2024, 'FILED', '00000000-0000-0000-0000-000000000002', 'Anderson Small Business', '741 Ash St', 'San Jose', 'CA', '95101', 95, 'Return filed on 03/10/2025'),
 ('10000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000020', 'Noah Thomas', 'noah.thomas@realestate.com', '555-1011', 'INDIVIDUAL', 2024, 'FILED', '00000000-0000-0000-0000-000000000003', NULL, '852 Poplar Ct', 'Austin', 'TX', '78701', 100, 'Successfully filed, awaiting payment'),
-('10000000-0000-0000-0000-000000000012', NULL, 'Patricia White', 'patricia.white@example.com', '555-1012', 'INDIVIDUAL', 2024, 'FILED', '00000000-0000-0000-0000-000000000004', NULL, '963 Juniper Way', 'Jacksonville', 'FL', '32201', 100, 'Filed 2 weeks ago'),
+('10000000-0000-0000-0000-000000000012', '00000000-0000-0000-0000-000000000021', 'Patricia White', 'patricia.white@example.com', '555-1012', 'INDIVIDUAL', 2024, 'FILED', '00000000-0000-0000-0000-000000000004', NULL, '963 Juniper Way', 'Jacksonville', 'FL', '32201', 100, 'Filed 2 weeks ago'),
 
 -- INVOICED (3 clients)
-('10000000-0000-0000-0000-000000000013', NULL, 'Robert Green', 'robert.green@example.com', '555-1013', 'S_CORP', 2023, 'INVOICED', '00000000-0000-0000-0000-000000000002', 'Green Enterprises', '159 Magnolia Dr', 'Columbus', 'OH', '43201', 100, 'Invoice sent 01/15/2025'),
-('10000000-0000-0000-0000-000000000014', NULL, 'Linda Taylor', 'linda.taylor@example.com', '555-1014', 'INDIVIDUAL', 2023, 'INVOICED', '00000000-0000-0000-0000-000000000003', NULL, '357 Hickory Ln', 'Fort Worth', 'TX', '76101', 100, 'Payment pending'),
-('10000000-0000-0000-0000-000000000015', NULL, 'James Moore', 'james.moore@example.com', '555-1015', 'LLC', 2023, 'COMPLETED', '00000000-0000-0000-0000-000000000004', 'Moore Consulting', '486 Cypress Ave', 'Charlotte', 'NC', '28201', 100, 'Completed and paid');
+('10000000-0000-0000-0000-000000000013', '00000000-0000-0000-0000-000000000022', 'Robert Green', 'robert.green@example.com', '555-1013', 'S_CORP', 2023, 'INVOICED', '00000000-0000-0000-0000-000000000002', 'Green Enterprises', '159 Magnolia Dr', 'Columbus', 'OH', '43201', 100, 'Invoice sent 01/15/2025'),
+('10000000-0000-0000-0000-000000000014', '00000000-0000-0000-0000-000000000023', 'Linda Taylor', 'linda.taylor@example.com', '555-1014', 'INDIVIDUAL', 2023, 'INVOICED', '00000000-0000-0000-0000-000000000003', NULL, '357 Hickory Ln', 'Fort Worth', 'TX', '76101', 100, 'Payment pending'),
+('10000000-0000-0000-0000-000000000015', '00000000-0000-0000-0000-000000000024', 'James Moore', 'james.moore@example.com', '555-1015', 'LLC', 2023, 'COMPLETED', '00000000-0000-0000-0000-000000000004', 'Moore Consulting', '486 Cypress Ave', 'Charlotte', 'NC', '28201', 100, 'Completed and paid');
 
 /* ----------------------------------------------------------------------
    DOCUMENTS: Sample documents for clients
