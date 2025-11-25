@@ -257,4 +257,4 @@ For issues or questions:
 
 ---
 
-**Built with:** Next.js 15 • React 19 • TypeScript • Prisma • PostgreSQL • Better Auth • Tailwind CSS • TanStack Query
+**Built with:** Next.js 16 • React 19 • TypeScript • Prisma • PostgreSQL • Better Auth • Tailwind CSS • TanStack Query

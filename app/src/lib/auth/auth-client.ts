@@ -1,4 +1,5 @@
 import { createAuthClient } from "better-auth/react";
+import { UserRole } from "./authorization";
 
 const baseURL =
   typeof window !== "undefined"
@@ -8,5 +9,14 @@ const baseURL =
 export const authClient = createAuthClient({
   baseURL,
 });
+
+// Helper type for session user with role
+export type SessionUser = {
+  id: string;
+  email: string;
+  name: string;
+  image?: string | null;
+  role: UserRole;
+};
 
 export const { signIn, signUp, signOut, useSession } = authClient;

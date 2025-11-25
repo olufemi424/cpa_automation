@@ -1,18 +1,11 @@
 "use client";
 
 import { authClient } from "@/lib/auth/auth-client";
-
-type UserWithRole = {
-  role?: string;
-  id: string;
-  email: string;
-  name: string;
-  image?: string | null;
-};
+import type { UserRole } from "@/types";
 
 export default function MessagesPage() {
   const { data: session } = authClient.useSession();
-  const userRole = (session?.user as UserWithRole)?.role || "CLIENT";
+  const userRole: UserRole = ((session?.user as { role?: UserRole })?.role) || "CLIENT";
 
   return (
     <div className="flex-1 overflow-y-auto">
