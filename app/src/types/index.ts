@@ -66,3 +66,81 @@ export interface Message {
   readAt?: Date;
   createdAt: Date;
 }
+
+// Session and Auth Types
+export type UserRole = "ADMIN" | "CPA" | "CLIENT";
+
+export interface SessionUser {
+  id: string;
+  email: string;
+  name: string;
+  image?: string | null;
+  role: UserRole;
+}
+
+// Analytics Types
+interface StatusCount {
+  status: string;
+  count: number;
+}
+
+export interface OverviewAnalytics {
+  totalClients: number;
+  clientsByStatus: StatusCount[];
+  tasksByStatus: StatusCount[];
+  completedThisMonth: number;
+  unreadMessages: number;
+}
+
+interface CPAPerformance {
+  id: string;
+  name: string;
+  email: string;
+  activeClients: number;
+  completedTasks: number;
+  clientsByStatus: Record<string, number>;
+}
+
+export interface ProductivityAnalytics {
+  cpas: CPAPerformance[];
+}
+
+interface PipelineClient {
+  id: string;
+  name: string;
+  progressPercentage: number;
+}
+
+interface PipelineStage {
+  status: string;
+  count: number;
+  clients: PipelineClient[];
+}
+
+export interface PipelineAnalytics {
+  pipeline: PipelineStage[];
+  averageTimePerStage: Record<string, number>;
+}
+
+interface TaskWithClient {
+  id: string;
+  title: string;
+  dueDate: Date;
+  clientName: string;
+}
+
+export interface DeadlineAnalytics {
+  overdueCount: number;
+  overdueTasks: TaskWithClient[];
+  upcomingTasks: TaskWithClient[];
+  completedLast30Days: number;
+}
+
+export type AnalyticsType = "overview" | "productivity" | "pipeline" | "deadlines";
+
+export type AnalyticsData<T extends AnalyticsType> = 
+  T extends "overview" ? OverviewAnalytics :
+  T extends "productivity" ? ProductivityAnalytics :
+  T extends "pipeline" ? PipelineAnalytics :
+  T extends "deadlines" ? DeadlineAnalytics :
+  never;

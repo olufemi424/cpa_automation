@@ -15,7 +15,7 @@
 ## Phase 1: Foundation & Setup ✅ COMPLETE
 
 ### 1.1 Project Setup
-- [✅] Initialize Next.js 15 project with TypeScript
+- [✅] Initialize Next.js 16 project with TypeScript
 - [✅] Configure Tailwind CSS
 - [✅] Set up Prisma with PostgreSQL
 - [✅] Install core dependencies (TanStack Query, Better Auth)
@@ -540,7 +540,7 @@
 
 ---
 
-**Next Up:** 
+**Next Up:**
 - **Immediate:** Complete Phase 3.7 Client Portal Features (document upload, task view, messaging, billing, notifications)
 - **Priority:** Phase 3.6 Email Integration & User Onboarding (new requirement: role-specific onboarding flows with email notifications)
 - **Later:** Phase 3.2 Document Management, Phase 3.3 Task Automation, Phase 3.4 Notifications, Phase 3.5 Real-Time Chat Enhancements

@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { NavLink } from "@/components/ui/NavLink";
 
 interface SidebarProps {
   userRole: string;
@@ -16,7 +16,6 @@ interface NavItem {
 }
 
 export function Sidebar({ userRole }: SidebarProps) {
-  const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navItems: NavItem[] = [
@@ -138,26 +137,17 @@ export function Sidebar({ userRole }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {visibleNavItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                }`}
-                title={isCollapsed ? item.name : undefined}
-              >
-                <span className={isActive ? "text-blue-600" : "text-gray-400"}>
-                  {item.icon}
-                </span>
-                {!isCollapsed && <span className="ml-3">{item.name}</span>}
-              </Link>
-            );
-          })}
+          {visibleNavItems.map((item) => (
+            <NavLink
+              key={item.name}
+              href={item.href}
+              icon={item.icon}
+              isCollapsed={isCollapsed}
+              title={isCollapsed ? item.name : undefined}
+            >
+              {item.name}
+            </NavLink>
+          ))}
         </nav>
 
         {/* User Role Badge */}
@@ -176,21 +166,18 @@ export function Sidebar({ userRole }: SidebarProps) {
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
         <div className="flex items-center justify-around h-16">
-          {visibleNavItems.slice(0, 5).map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex flex-col items-center justify-center flex-1 h-full ${
-                  isActive ? "text-blue-600" : "text-gray-500"
-                }`}
-              >
-                <span>{item.icon}</span>
-                <span className="text-xs mt-1">{item.name}</span>
-              </Link>
-            );
-          })}
+          {visibleNavItems.slice(0, 5).map((item) => (
+            <NavLink
+              key={item.name}
+              href={item.href}
+              icon={item.icon}
+              className="flex-col justify-center h-full px-0 py-0 rounded-none"
+              activeClassName="text-blue-600"
+              inactiveClassName="text-gray-500"
+            >
+              <span className="text-xs mt-1">{item.name}</span>
+            </NavLink>
+          ))}
         </div>
       </nav>
     </>

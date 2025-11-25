@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/db/prisma";
 import bcrypt from "bcryptjs";
+import { UserRole } from "./authorization";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -55,3 +56,10 @@ export const auth = betterAuth({
 });
 
 export type Session = typeof auth.$Infer.Session;
+
+// Type helper to include role in user object
+export type SessionWithRole = Session & {
+  user: Session["user"] & {
+    role: UserRole;
+  };
+};

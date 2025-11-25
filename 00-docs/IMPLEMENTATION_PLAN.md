@@ -17,7 +17,7 @@ For AI coding guidelines, see [../.github/copilot-instructions.md](../.github/co
 ## Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 15 (App Router, React 19)
+- **Framework:** Next.js 16 (App Router, React 19)
 - **State Management:** TanStack Query (server state), React hooks (UI state)
 - **UI Components:** Tailwind CSS, custom components
 - **Tables:** TanStack Table
@@ -52,7 +52,7 @@ For AI coding guidelines, see [../.github/copilot-instructions.md](../.github/co
 - Create basic project structure
 
 ### Deliverables
-1. ✅ Next.js 15 project with TypeScript
+1. ✅ Next.js 16 project with TypeScript
 2. ✅ PostgreSQL database with 13 tables
 3. ✅ Prisma ORM configured with migrations
 4. ✅ Better Auth with email/password authentication
