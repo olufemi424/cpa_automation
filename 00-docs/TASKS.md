@@ -1,7 +1,7 @@
 # CPA Automation - Task List
 
-**Last Updated:** November 15, 2024
-**Current Phase:** Phase 2 - Core Features
+**Last Updated:** November 23, 2025
+**Current Phase:** Phase 3 - Advanced Features
 
 ## Task Status Guide
 - `[ ]` Not started
@@ -320,6 +320,29 @@
   - [ ] Create /auth/set-password/[token] page
   - [ ] Validate token and allow password creation
   - [ ] Mark user as active after password setup
+- [ ] Build role-specific onboarding flows (Estimated: 3h)
+  - [ ] Create onboarding state tracking (onboarding_completed field)
+  - [ ] CLIENT onboarding flow:
+    - [ ] Welcome page with platform overview
+    - [ ] Profile completion (phone, address, business info)
+    - [ ] Document upload walkthrough
+    - [ ] CPA introduction (assigned CPA details)
+    - [ ] Dashboard tour
+  - [ ] CPA onboarding flow:
+    - [ ] Welcome page with role responsibilities
+    - [ ] Profile setup (license number, specializations)
+    - [ ] Client management overview
+    - [ ] Tools and features walkthrough
+    - [ ] First client assignment
+  - [ ] Redirect to onboarding on first login if not completed
+  - [ ] Skip button for onboarding (can access later)
+  - [ ] Progress indicator for multi-step onboarding
+- [ ] Enhance admin user creation with email notification (Estimated: 1.5h)
+  - [ ] Modify POST /api/admin/users to accept role (ADMIN | CPA | CLIENT)
+  - [ ] Generate onboarding token on user creation
+  - [ ] Send role-specific welcome email with password setup link
+  - [ ] Email includes: platform introduction, next steps, support contact
+  - [ ] Admin sees confirmation: "User created. Onboarding email sent."
 - [ ] Build password reset functionality (Estimated: 2h)
   - [ ] Create "Forgot Password" link on login page
   - [ ] Build POST /api/auth/forgot-password endpoint
@@ -334,17 +357,27 @@
   - [ ] Add email sending queue (future: BullMQ/Redis)
   - [ ] Email delivery logging and retry logic
 
-**Subtotal:** 7-8 hours
+**Subtotal:** 12-13 hours
 
-### 3.7 Client Portal Features
-- [ ] Build client-specific dashboard view (Estimated: 3h)
-  - [ ] Personal welcome section with client name
-  - [ ] Single-case progress visualization (timeline or stepper)
-  - [ ] Document upload status card
-  - [ ] Task checklist with completion indicators
-  - [ ] Assigned CPA contact card with photo and details
-  - [ ] Next steps/action items section
-  - [ ] Mobile-responsive layout
+### 3.7 Client Portal Features 🔄 IN PROGRESS
+- [✅] Build client-specific dashboard view (Completed: 3h)
+  - [✅] Personal welcome section with client name
+  - [✅] Single-case progress visualization (timeline stepper)
+  - [✅] Document upload status card
+  - [✅] Task checklist with completion indicators
+  - [✅] Assigned CPA contact card with photo and details
+  - [✅] Next steps/action items section
+  - [✅] Mobile-responsive layout
+  - [✅] Fixed layout with 100vh sidebar and independent scrolling
+  - [✅] Route group structure for layout separation
+  - [✅] Client list sidebar with search/filter
+- [✅] Implement enhanced client management (Completed: 2h)
+  - [✅] Client list page with status filters
+  - [✅] Client detail page with tabbed interface
+  - [✅] Create client modal with validation
+  - [✅] Edit client page with pre-filled forms at /clients/[id]/edit
+  - [✅] useClients, useCreateClient, useUpdateClient hooks
+  - [✅] Proper navigation flow (list → detail → edit → detail)
 - [ ] Create client document upload interface (Estimated: 2.5h)
   - [ ] Client-facing drag-and-drop upload component
   - [ ] Document category selection (W2, 1099, receipts, etc.)
@@ -379,9 +412,9 @@
   - [ ] Mark as read functionality
   - [ ] Link to relevant sections from notification
 
-**Subtotal:** 13-14 hours
+**Subtotal:** 13-14 hours | **Completed:** 5h | **Remaining:** 8-9h
 
-**Phase 3 Total:** 54-61 hours (estimated)
+**Phase 3 Total:** 59-66 hours (estimated) | **Completed:** 11h | **Remaining:** 48-55h
 
 ---
 
@@ -469,11 +502,11 @@
 |-------|--------|---------------|------------|-----------|
 | Phase 1 | ✅ Complete | 10-13h | ~12h | 0h |
 | Phase 2 | ✅ Complete | 29.5h | 29.5h | 0h |
-| Phase 3 | 🔄 In Progress | 54-61h | 6h | 48-55h |
+| Phase 3 | 🔄 In Progress | 59-66h | 11h | 48-55h |
 | Phase 4 | ⏳ Planned | 14-16h | 0h | 14-16h |
 | Phase 5 | ⏳ Planned | 25-28h | 0h | 25-28h |
 | Phase 6 | ⏳ Planned | 10-12h | 0h | 10-12h |
-| **Total** | | **142-162h** | **~47.5h** | **~94.5-114.5h** |
+| **Total** | | **147-167h** | **~52.5h** | **~94.5-114.5h** |
 
 ---
 
@@ -507,4 +540,7 @@
 
 ---
 
-**Next Up:** Phase 3 - Advanced Features (User Management, Document Management, Task Automation)
+**Next Up:** 
+- **Immediate:** Complete Phase 3.7 Client Portal Features (document upload, task view, messaging, billing, notifications)
+- **Priority:** Phase 3.6 Email Integration & User Onboarding (new requirement: role-specific onboarding flows with email notifications)
+- **Later:** Phase 3.2 Document Management, Phase 3.3 Task Automation, Phase 3.4 Notifications, Phase 3.5 Real-Time Chat Enhancements
