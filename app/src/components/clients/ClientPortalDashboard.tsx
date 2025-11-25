@@ -79,7 +79,6 @@ export function ClientPortalDashboard({ userName }: ClientPortalDashboardProps) 
         <div className="lg:col-span-2 space-y-6">
           <ProgressTimeline
             currentStatus={clientData.status}
-            progressPercentage={clientData.progressPercentage}
           />
 
           <DocumentChecklist

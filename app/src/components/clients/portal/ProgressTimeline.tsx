@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 
 interface ProgressTimelineProps {
   currentStatus: string;
-  progressPercentage: number;
 }
 
 const STATUS_STEPS = [
@@ -48,7 +47,7 @@ const STATUS_STEPS = [
   },
 ];
 
-export function ProgressTimeline({ currentStatus, progressPercentage }: ProgressTimelineProps) {
+export function ProgressTimeline({ currentStatus }: ProgressTimelineProps) {
   // Handle COMPLETED status by mapping it to the last step
   const isCompletedStatus = currentStatus === "COMPLETED";
   const foundIndex = STATUS_STEPS.findIndex((step) => step.key === currentStatus);
@@ -129,22 +128,6 @@ export function ProgressTimeline({ currentStatus, progressPercentage }: Progress
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Overall Progress Footer */}
-        <div className="mt-10 pt-6 border-t border-gray-100">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-gray-600">Overall Completion</span>
-            <span className="text-sm font-bold text-amber-600">{progressPercentage}%</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-gray-900 via-amber-500 to-amber-400 transition-all duration-1000 ease-out relative"
-              style={{ width: `${progressPercentage}%` }}
-            >
-              <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" />
-            </div>
           </div>
         </div>
       </div>

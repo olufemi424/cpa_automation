@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
   const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-  
+
   // Check for session cookie
   const sessionToken = request.cookies.get("cpa_auth.session_token");
 

@@ -1,10 +1,132 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { successResponse, errorResponse, withErrorHandling } from "@/lib/api/response";
 import { rateLimit } from "@/lib/api/rateLimit";
 import { requireAuth, canAccessClient } from "@/lib/auth/authorization";
+import { TaskStatus } from "@/types";
 
 const limiter = rateLimit({ maxRequests: 100, windowMs: 60000 });
+
+/**
+ * GET /api/tasks - Fetch tasks with role-based filtering
+ */
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const rateLimitResult = limiter(request);
+  if (rateLimitResult) return rateLimitResult;
+
+  // Authentication
+  const authResult = await requireAuth(request);
+  if (authResult instanceof NextResponse) return authResult;
+
+  const user = authResult;
+
+  return withErrorHandling(async () => {
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get("status");
+    const clientId = searchParams.get("clientId");
+    const search = searchParams.get("search");
+    const assignedToId = searchParams.get("assignedToId");
+
+    // Build where clause based on user role
+    const where: Prisma.tasksWhereInput = {};
+
+    // Role-based filtering
+    if (user.role === "CPA") {
+      // CPAs only see tasks for clients assigned to them
+      where.clients = {
+        assigned_to_id: user.id,
+      };
+    } else if (user.role === "CLIENT") {
+      // Clients only see tasks for their own case
+      where.clients = {
+        user_id: user.id,
+      };
+    }
+    // ADMIN sees all tasks (no additional filter)
+
+    // Apply filters
+    if (status && status !== "ALL") {
+      where.status = status as TaskStatus;
+    }
+
+    if (clientId) {
+      where.client_id = clientId;
+    }
+
+    if (assignedToId) {
+      where.assigned_to_id = assignedToId;
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // Fetch tasks with related data
+    const tasks = await prisma.tasks.findMany({
+      where,
+      include: {
+        clients: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            status: true,
+          },
+        },
+        users_tasks_assigned_to_idTousers: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+      orderBy: [
+        { is_completed: "asc" }, // Incomplete tasks first
+        { due_date: "asc" }, // Sort by due date
+        { created_at: "desc" }, // Then by creation date
+      ],
+    });
+
+    // Format response with camelCase
+    const formattedTasks = tasks.map((task) => ({
+      id: task.id,
+      clientId: task.client_id,
+      client: {
+        id: task.clients.id,
+        name: task.clients.name,
+        email: task.clients.email,
+        status: task.clients.status,
+      },
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      assignedToId: task.assigned_to_id,
+      assignedTo: task.users_tasks_assigned_to_idTousers
+        ? {
+            id: task.users_tasks_assigned_to_idTousers.id,
+            name: task.users_tasks_assigned_to_idTousers.name,
+            email: task.users_tasks_assigned_to_idTousers.email,
+            role: task.users_tasks_assigned_to_idTousers.role,
+          }
+        : undefined,
+      dueDate: task.due_date,
+      isCompleted: task.is_completed,
+      completedAt: task.completed_at,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at,
+    }));
+
+    return successResponse(formattedTasks);
+  });
+}
 
 /**
  * POST /api/tasks - Create a new task
