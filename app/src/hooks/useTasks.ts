@@ -19,7 +19,7 @@ interface TaskWithClient extends Task {
 
 async function fetchTasks(filters?: TaskFilters): Promise<TaskWithClient[]> {
   const params = new URLSearchParams();
-  
+
   if (filters?.status && filters.status !== "ALL") {
     params.append("status", filters.status);
   }
@@ -37,7 +37,7 @@ async function fetchTasks(filters?: TaskFilters): Promise<TaskWithClient[]> {
   const url = `/api/tasks${queryString ? `?${queryString}` : ""}`;
 
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error("Failed to fetch tasks");
   }
