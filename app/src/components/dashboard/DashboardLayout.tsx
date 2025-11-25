@@ -36,7 +36,7 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
       <Sidebar userRole={user.role || "CLIENT"} />
-      
+
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
@@ -45,7 +45,7 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
           userEmail={user.email}
           isClient={isClient}
         />
-        
+
         {/* Dashboard Content */}
         <div className="flex flex-1 overflow-hidden">
         {/* CLIENT VIEW: Client portal dashboard */}
@@ -91,7 +91,7 @@ export function DashboardLayout({ user }: DashboardLayoutProps) {
             </main>
 
             {/* Right Panel - Client Overview and Chat */}
-            {(isOverviewOpen || isChatOpen) && (
+            {selectedClientId && (isOverviewOpen || isChatOpen) && (
               <aside className="dashboard__sidebar dashboard__sidebar--right w-96 border-l overflow-y-auto animate-fade-in-fast flex flex-col" style={{
                 background: 'var(--glass-bg)',
                 borderColor: 'var(--glass-border)'
