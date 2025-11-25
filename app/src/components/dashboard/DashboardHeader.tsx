@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/lib/auth/auth-client";
 
@@ -60,14 +61,14 @@ export function DashboardHeader({ userName, userEmail, isClient }: DashboardHead
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                CPA Command Center
-              </h1>
-              {isClient && (
-                <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
-                  Client Portal
-                </span>
-              )}
+              <Image
+                src="/logo.png"
+                alt="Wilson & Associates"
+                width={176}
+                height={44}
+                className="h-10 w-auto"
+                priority
+              />
             </div>
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex flex-col items-end">

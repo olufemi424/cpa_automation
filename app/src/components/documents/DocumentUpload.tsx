@@ -15,6 +15,7 @@ interface UploadingDocument {
 interface DocumentUploadProps {
   clientId: string;
   onUploadComplete?: () => void;
+  allowCategorySelection?: boolean;
 }
 
 const ALLOWED_FILE_TYPES = [
@@ -28,11 +29,13 @@ const ALLOWED_FILE_TYPES = [
 
 const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png", ".doc", ".docx"];
 
-export function DocumentUpload({ clientId, onUploadComplete }: DocumentUploadProps) {
+export function DocumentUpload({ clientId, onUploadComplete, allowCategorySelection = false }: DocumentUploadProps) {
   const { data: documents = [] } = useDocuments(clientId);
   const [uploadingFiles, setUploadingFiles] = useState<UploadingDocument[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("AUTO");
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -111,6 +114,11 @@ export function DocumentUpload({ clientId, onUploadComplete }: DocumentUploadPro
     formData.append("file", file);
     formData.append("clientId", clientId);
 
+    // Only append documentType if it's not AUTO
+    if (selectedCategory && selectedCategory !== "AUTO") {
+      formData.append("documentType", selectedCategory);
+    }
+
     try {
       const response = await fetch("/api/documents", {
         method: "POST",
@@ -168,8 +176,43 @@ export function DocumentUpload({ clientId, onUploadComplete }: DocumentUploadPro
     return colors[type || "OTHER"] || colors.OTHER;
   };
 
+  const DOCUMENT_CATEGORIES = [
+    { value: "AUTO", label: "Auto-detect Category" },
+    { value: "W2", label: "W-2 Wage Statement" },
+    { value: "1099_MISC", label: "1099-MISC" },
+    { value: "1099_NEC", label: "1099-NEC" },
+    { value: "1099_INT", label: "1099-INT" },
+    { value: "1099_DIV", label: "1099-DIV" },
+    { value: "SCHEDULE_C", label: "Business Expense (Sch C)" },
+    { value: "RECEIPT", label: "Receipt" },
+    { value: "INVOICE", label: "Invoice" },
+    { value: "STATEMENT", label: "Bank Statement" },
+    { value: "ID", label: "ID / Passport" },
+    { value: "OTHER", label: "Other Document" },
+  ];
+
   return (
     <div className="space-y-4">
+      {/* Category Selection */}
+      {allowCategorySelection && (
+        <div className="flex items-center space-x-3 mb-2">
+          <label htmlFor="doc-category" className="text-sm font-medium text-gray-700">
+            Document Type:
+          </label>
+          <select
+            id="doc-category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+          >
+            {DOCUMENT_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       {/* Drop Zone */}
       <div
         onDragOver={handleDragOver}
